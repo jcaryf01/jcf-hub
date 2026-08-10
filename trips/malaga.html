@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Málaga → Miami · Voyage Dossier</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B2740;        /* deep sea at dusk */
+    --abyss:#071B2E;      /* darker panel */
+    --panel:#0F3050;      /* raised panel */
+    --panel-2:#12395E;
+    --brass:#C9A85C;      /* ship's fittings */
+    --brass-soft:#E4CD97;
+    --foam:#E9F0F3;       /* light text */
+    --foam-dim:#A9C0CE;   /* muted text */
+    --coral:#E58A63;      /* Andalusian sun — used sparingly for ports on land */
+    --line:rgba(201,168,92,0.22);
+    --line-soft:rgba(169,192,206,0.14);
+    --sea-row:rgba(169,192,206,0.05);
+    --shadow:0 18px 50px -22px rgba(0,0,0,.7);
+    --r:14px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+  body{
+    margin:0;background:
+      radial-gradient(1200px 620px at 78% -8%, #123a5e 0%, rgba(18,58,94,0) 60%),
+      radial-gradient(900px 500px at 0% 100%, #0a2033 0%, rgba(10,32,51,0) 55%),
+      var(--ink);
+    color:var(--foam);
+    font-family:'Inter',system-ui,-apple-system,sans-serif;
+    font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;
+    background-attachment:fixed;
+  }
+  .wrap{max-width:1060px;margin:0 auto;padding:0 22px}
+  a{color:var(--brass-soft);text-decoration:none}
+  a:hover{color:#fff;text-decoration:underline;text-underline-offset:3px}
+  h1,h2,h3{font-family:'Fraunces',Georgia,serif;font-weight:600;line-height:1.08;margin:0}
+  .eyebrow{font-size:11.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--brass);font-weight:600}
+  code,.mono{font-family:ui-monospace,'SF Mono',Menlo,Consolas,monospace}
+
+  /* ---------- Masthead ---------- */
+  header.mast{position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
+  .mast-grid{position:absolute;inset:0;opacity:.5;
+    background-image:linear-gradient(var(--line-soft) 1px,transparent 1px),linear-gradient(90deg,var(--line-soft) 1px,transparent 1px);
+    background-size:44px 44px;mask-image:linear-gradient(180deg,#000 0%,transparent 88%)}
+  .mast-inner{position:relative;padding:52px 0 40px}
+  .mast .eyebrow{display:flex;align-items:center;gap:11px}
+  .mast .eyebrow::after{content:"";height:1px;flex:1;max-width:170px;background:var(--line)}
+  h1{font-size:clamp(2.9rem,8vw,5.3rem);letter-spacing:-.01em;margin:.28em 0 .12em}
+  h1 .arrow{color:var(--brass);font-family:'Inter',sans-serif;font-weight:400;padding:0 .12em}
+  .sub{font-size:clamp(1rem,2.4vw,1.28rem);color:var(--foam-dim);font-family:'Fraunces',serif;font-weight:400;font-style:italic}
+  .voyagers{margin-top:14px;font-size:.9rem;letter-spacing:.02em;color:var(--foam)}
+  .voyagers b{color:#fff}
+
+  /* countdown */
+  .count{display:flex;gap:10px;margin-top:26px;flex-wrap:wrap}
+  .count .cell{background:linear-gradient(180deg,var(--panel),var(--abyss));border:1px solid var(--line);border-radius:12px;padding:12px 16px;min-width:78px;text-align:center;box-shadow:var(--shadow)}
+  .count .num{font-family:'Fraunces',serif;font-size:1.9rem;font-weight:600;color:var(--brass-soft);line-height:1}
+  .count .lab{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--foam-dim);margin-top:6px}
+  .count-note{font-size:.82rem;color:var(--foam-dim);margin-top:12px}
+
+  /* at a glance strip */
+  .glance{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-top:30px}
+  .glance div{background:var(--ink);padding:16px 18px}
+  .glance .k{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--brass)}
+  .glance .v{font-family:'Fraunces',serif;font-size:1.35rem;margin-top:5px}
+  .glance .v small{display:block;font-family:'Inter';font-size:.72rem;color:var(--foam-dim);letter-spacing:.02em;margin-top:3px}
+  @media(max-width:680px){.glance{grid-template-columns:repeat(2,1fr)}h1{margin-top:.2em}}
+
+  /* ---------- Sticky nav ---------- */
+  nav.jump{position:sticky;top:0;z-index:20;background:rgba(7,27,46,.82);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  nav.jump ul{list-style:none;margin:0;padding:0;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+  nav.jump ul::-webkit-scrollbar{display:none}
+  nav.jump a{display:block;white-space:nowrap;padding:14px 15px;font-size:.82rem;letter-spacing:.03em;color:var(--foam-dim);border-bottom:2px solid transparent;font-weight:500}
+  nav.jump a:hover{color:var(--foam);text-decoration:none}
+  nav.jump a.active{color:var(--brass-soft);border-bottom-color:var(--brass)}
+
+  /* ---------- Sections ---------- */
+  section{padding:52px 0 8px;scroll-margin-top:56px}
+  .sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:24px}
+  .sec-head .no{font-family:'Fraunces',serif;font-size:.95rem;color:var(--brass);font-weight:600;letter-spacing:.05em}
+  .sec-head h2{font-size:clamp(1.6rem,4vw,2.15rem)}
+  .lead{color:var(--foam-dim);max-width:64ch;margin:-8px 0 26px;font-size:1.02rem}
+
+  .card{background:linear-gradient(180deg,var(--panel) 0%,var(--abyss) 130%);border:1px solid var(--line);border-radius:var(--r);padding:22px 24px;box-shadow:var(--shadow)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:720px){.grid2{grid-template-columns:1fr}}
+
+  /* re-route notice */
+  .notice{border:1px solid rgba(229,138,99,.42);background:linear-gradient(180deg,rgba(229,138,99,.12),rgba(229,138,99,.03));border-radius:var(--r);padding:18px 20px;margin-bottom:28px}
+  .notice .tag{display:inline-block;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--coral);font-weight:600;margin-bottom:6px}
+  .notice p{margin:.35em 0 0;font-size:.93rem;color:var(--foam)}
+
+  /* journey phases (overview) */
+  .phases{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:6px}
+  @media(max-width:720px){.phases{grid-template-columns:1fr 1fr}}
+  .phase{position:relative;background:var(--abyss);border:1px solid var(--line-soft);border-radius:12px;padding:16px 16px 18px}
+  .phase .ico{font-size:1.2rem}
+  .phase .p-when{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--brass);margin-top:8px}
+  .phase .p-title{font-family:'Fraunces',serif;font-size:1.15rem;margin-top:3px}
+  .phase .p-desc{font-size:.82rem;color:var(--foam-dim);margin-top:5px}
+
+  /* flight legs */
+  .leg{display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:center;padding:16px 0;border-top:1px solid var(--line-soft)}
+  .leg:first-of-type{border-top:0}
+  .leg .end{text-align:center;min-width:66px}
+  .leg .code{font-family:'Fraunces',serif;font-size:1.5rem;color:#fff;line-height:1}
+  .leg .time{font-size:.8rem;color:var(--foam-dim);margin-top:4px}
+  .leg .date{font-size:.72rem;color:var(--brass);letter-spacing:.05em;margin-top:2px}
+  .leg .mid{text-align:center;color:var(--foam-dim)}
+  .leg .path{display:flex;align-items:center;gap:8px;justify-content:center;color:var(--brass)}
+  .leg .path .rule{height:1px;width:34px;background:var(--line)}
+  .leg .fl{font-size:.9rem;color:var(--foam);margin-top:4px}
+  .leg .op{font-size:.74rem;color:var(--foam-dim)}
+  .leg .seats{font-size:.78rem;color:var(--foam-dim);margin-top:3px}
+  .leg .cabin{font-size:.72rem;color:var(--brass-soft);letter-spacing:.04em}
+  @media(max-width:560px){.leg{grid-template-columns:1fr;text-align:left;gap:6px}.leg .end,.leg .mid{text-align:left}.leg .path{justify-content:flex-start}}
+
+  /* confirmation chip w/ copy */
+  .conf{display:inline-flex;align-items:center;gap:8px;background:var(--abyss);border:1px solid var(--line);border-radius:9px;padding:6px 8px 6px 12px;font-size:.86rem}
+  .conf .lbl{font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--foam-dim)}
+  .conf .val{font-family:ui-monospace,Menlo,monospace;color:var(--brass-soft);font-weight:500;letter-spacing:.02em}
+  .copy{border:1px solid var(--line);background:transparent;color:var(--foam-dim);border-radius:6px;width:26px;height:24px;cursor:pointer;font-size:.7rem;display:inline-flex;align-items:center;justify-content:center;transition:.15s}
+  .copy:hover{color:#fff;border-color:var(--brass)}
+  .copy.done{color:#7ad19a;border-color:#7ad19a}
+
+  .kv{display:flex;justify-content:space-between;gap:16px;padding:9px 0;border-top:1px solid var(--line-soft);font-size:.92rem}
+  .kv:first-child{border-top:0}
+  .kv .k{color:var(--foam-dim)}
+  .kv .v{text-align:right;color:var(--foam);font-weight:500}
+  .pill{display:inline-block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--brass);border:1px solid var(--line);border-radius:100px;padding:3px 11px}
+  .btn{display:inline-flex;align-items:center;gap:8px;margin-top:16px;border:1px solid var(--brass);color:var(--brass-soft);border-radius:10px;padding:9px 16px;font-size:.85rem;font-weight:500;transition:.15s}
+  .btn:hover{background:var(--brass);color:var(--abyss);text-decoration:none}
+  .cardtitle{font-family:'Fraunces',serif;font-size:1.4rem;margin-bottom:2px}
+  .cardsub{color:var(--foam-dim);font-size:.9rem;margin-bottom:16px}
+
+  /* ---------- The Crossing timeline (signature) ---------- */
+  .voyage{border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--abyss)}
+  .v-day{display:grid;grid-template-columns:96px 30px 1fr auto;align-items:center;gap:14px;padding:13px 20px;border-top:1px solid var(--line-soft);position:relative}
+  .v-day:first-child{border-top:0}
+  .v-day.port{background:linear-gradient(90deg,rgba(201,168,92,.10),rgba(201,168,92,0) 60%)}
+  .v-day.sea .place{color:var(--foam-dim)}
+  .v-date{font-size:.76rem;color:var(--foam-dim);letter-spacing:.02em}
+  .v-date b{display:block;color:var(--foam);font-family:'Fraunces',serif;font-size:.95rem;font-weight:500}
+  .v-mark{display:flex;align-items:center;justify-content:center;font-size:1.05rem}
+  .v-day.port .v-mark{color:var(--brass)}
+  .v-day.sea .v-mark{color:var(--foam-dim);opacity:.6}
+  .place{font-family:'Fraunces',serif;font-size:1.12rem}
+  .v-day.port .place{color:#fff}
+  .v-note{font-size:.78rem;color:var(--foam-dim);margin-top:1px}
+  .v-tag{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--brass);white-space:nowrap}
+  .v-day.sea .v-tag{color:var(--foam-dim);opacity:.7}
+  .seatoggle{width:100%;text-align:left;background:var(--sea-row);border:0;border-top:1px solid var(--line-soft);color:var(--foam-dim);padding:12px 20px;cursor:pointer;font-family:inherit;font-size:.82rem;letter-spacing:.03em;display:flex;align-items:center;gap:10px}
+  .seatoggle:hover{color:var(--foam)}
+  .seatoggle .chev{transition:transform .2s}
+  .seatoggle[aria-expanded="true"] .chev{transform:rotate(90deg)}
+  .sea-hidden{display:none}
+  @media(max-width:560px){.v-day{grid-template-columns:80px 24px 1fr;}.v-tag{grid-column:1 / -1;padding-left:94px;margin-top:-6px}}
+
+  /* costs table */
+  table.costs{width:100%;border-collapse:collapse;font-size:.9rem}
+  table.costs th{text-align:left;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--brass);font-weight:600;padding:0 10px 12px;border-bottom:1px solid var(--line)}
+  table.costs th.r,table.costs td.r{text-align:right}
+  table.costs td{padding:13px 10px;border-bottom:1px solid var(--line-soft);vertical-align:top}
+  table.costs .item{color:#fff;font-weight:500}
+  table.costs .desc{color:var(--foam-dim);font-size:.8rem;display:block;margin-top:2px}
+  table.costs tr.total td{border-top:1px solid var(--brass);border-bottom:0;font-family:'Fraunces',serif;font-size:1.05rem;color:#fff;padding-top:15px}
+  .bal{color:var(--coral);font-weight:600}
+  .paid{color:#7ad19a}
+
+  /* checklist */
+  .check{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+  .check li{display:flex;gap:13px;align-items:flex-start;background:var(--abyss);border:1px solid var(--line-soft);border-radius:11px;padding:14px 16px;cursor:pointer;transition:.15s}
+  .check li:hover{border-color:var(--line)}
+  .check .box{flex:0 0 20px;height:20px;border:1.5px solid var(--brass);border-radius:6px;margin-top:2px;display:flex;align-items:center;justify-content:center;color:transparent;font-size:.8rem;transition:.15s}
+  .check li.on .box{background:var(--brass);color:var(--abyss)}
+  .check .ct{font-weight:500;color:#fff}
+  .check li.on .ct{text-decoration:line-through;color:var(--foam-dim)}
+  .check .cd{font-size:.82rem;color:var(--foam-dim);margin-top:3px}
+
+  /* footer / agent */
+  footer{margin-top:60px;border-top:1px solid var(--line);padding:34px 0 60px}
+  .agent{display:flex;flex-wrap:wrap;gap:6px 22px;align-items:center;font-size:.9rem;color:var(--foam-dim)}
+  .agent b{color:#fff;font-family:'Fraunces',serif;font-size:1.05rem;font-weight:500}
+  .fine{font-size:.76rem;color:var(--foam-dim);margin-top:18px;line-height:1.7;opacity:.8}
+  :focus-visible{outline:2px solid var(--brass-soft);outline-offset:3px;border-radius:4px}
+  ::selection{background:var(--brass);color:var(--abyss)}
+
+  /* ---------- Days ashore ---------- */
+  .plan{display:grid;gap:16px}
+  .day{background:linear-gradient(180deg,var(--panel) 0%,var(--abyss) 135%);border:1px solid var(--line);border-radius:var(--r);padding:22px 24px;box-shadow:var(--shadow)}
+  .day.brief{padding:15px 24px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .day-head{display:flex;align-items:baseline;gap:13px;flex-wrap:wrap}
+  .day-head .when{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--brass);font-weight:600}
+  .day-head h3{font-size:1.45rem}
+  .day .intro{color:var(--foam-dim);font-size:.92rem;margin:9px 0 0}
+  .sights{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:12px}
+  .sights li{padding-left:22px;position:relative}
+  .sights li::before{content:"";position:absolute;left:2px;top:8px;width:7px;height:7px;border:1.5px solid var(--brass);border-radius:2px;transform:rotate(45deg)}
+  .sights .nm{font-weight:600;color:#fff}
+  .sights .nm::after{content:" — ";color:var(--foam-dim);font-weight:400}
+  .sights .ov{color:var(--foam-dim);font-size:.9rem}
+  .rec{margin-top:18px;border-left:2px solid var(--brass);background:rgba(201,168,92,.06);border-radius:0 10px 10px 0;padding:13px 17px}
+  .rec .rh{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--brass-soft);font-weight:600;margin-bottom:7px}
+  .rec ul{margin:0;padding-left:17px;font-size:.88rem;color:var(--foam)}
+  .rec li{margin:4px 0}
+  .day .brief-when{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--brass);font-weight:600}
+  .day .brief-txt{color:var(--foam);font-size:.94rem}
+  .day .brief-txt b{font-family:'Fraunces',serif;font-weight:500}
+  /* ---------- Tickets ---------- */
+  .tk-wrap{margin-top:16px}
+  .tk-eyebrow{display:flex;align-items:center;gap:10px;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--brass-soft);font-weight:600;margin-bottom:12px}
+  .tk-eyebrow .pulse{width:7px;height:7px;border-radius:50%;background:var(--brass)}
+  .tickets{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:640px){.tickets{grid-template-columns:1fr}}
+  .ticket{background:#fff;color:#12283d;border-radius:12px;padding:15px;display:flex;gap:15px;align-items:center;box-shadow:var(--shadow)}
+  .ticket .qr{width:112px;height:112px;flex:0 0 112px;background:#fff;border:1px solid #e4e9ee;border-radius:8px;padding:6px}
+  .ticket .qr img{width:100%;height:100%;display:block;image-rendering:pixelated}
+  .ticket .tk-name{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:1.08rem;color:#0B2740;line-height:1.15}
+  .ticket .tk-meta{font-size:.78rem;color:#4a627a;margin-top:5px;line-height:1.55}
+  .ticket .tk-meta b{color:#0B2740}
+  .ticket .tk-ref{display:inline-block;margin-top:7px;font-family:ui-monospace,Menlo,monospace;font-size:.78rem;color:#8a6d2f;background:#faf4e6;border:1px solid #ecdcb6;border-radius:6px;padding:2px 7px}
+  .tk-privacy{margin-top:12px;font-size:.78rem;color:var(--coral);display:flex;gap:8px;align-items:flex-start}
+  .tk-live img{background:#fff}
+</style>
+</head>
+<body>
+
+<header class="mast">
+  <div class="mast-grid" aria-hidden="true"></div>
+  <div class="wrap mast-inner">
+    <div class="eyebrow">Voyage Dossier · Transatlantic Crossing</div>
+    <h1>Málaga<span class="arrow">→</span>Miami</h1>
+    <div class="sub">Thirteen nights aboard Azamara&nbsp;Quest — Andalusia, Tangier &amp; ten days across the open Atlantic.</div>
+    <div class="voyagers">Prepared for <b>Cary Flynn</b> &amp; <b>Zully Fernandez</b> · 28 Nov – 17 Dec 2026</div>
+
+    <div class="count" id="countdown" aria-label="Countdown to departure">
+      <div class="cell"><div class="num" data-d>—</div><div class="lab">Days</div></div>
+      <div class="cell"><div class="num" data-h>—</div><div class="lab">Hours</div></div>
+      <div class="cell"><div class="num" data-m>—</div><div class="lab">Minutes</div></div>
+    </div>
+    <div class="count-note" id="countnote">until wheels-up from Tampa</div>
+
+    <div class="glance">
+      <div><div class="k">Ship</div><div class="v">Azamara Quest<small>Club Veranda Plus</small></div></div>
+      <div><div class="k">The Crossing</div><div class="v">13 nights<small>4 ports · 10 days at sea</small></div></div>
+      <div><div class="k">Embark</div><div class="v">Málaga<small>Fri, Dec 4 · sail 10:00 PM</small></div></div>
+      <div><div class="k">Home Port</div><div class="v">Miami<small>Thu, Dec 17 · 6:00 AM</small></div></div>
+    </div>
+  </div>
+</header>
+
+<nav class="jump">
+  <div class="wrap">
+    <ul>
+      <li><a href="#overview">Overview</a></li>
+      <li><a href="#flights">Flights</a></li>
+      <li><a href="#hotel">Málaga &amp; Hotel</a></li>
+      <li><a href="#ashore">Days Ashore</a></li>
+      <li><a href="#caminito">Caminito del Rey</a></li>
+      <li><a href="#crossing">The Crossing</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main class="wrap">
+
+  <!-- OVERVIEW -->
+  <section id="overview">
+    <div class="sec-head"><span class="no">01</span><h2>The journey, end to end</h2></div>
+
+    <div class="phases">
+      <div class="phase"><div class="ico">✈️</div><div class="p-when">Nov 28–29</div><div class="p-title">Fly to Málaga</div><div class="p-desc">Tampa → Dallas → London → Málaga on American / British Airways.</div></div>
+      <div class="phase"><div class="ico">🏛️</div><div class="p-when">Nov 29 – Dec 4</div><div class="p-title">Málaga stay</div><div class="p-desc">Palacio Solecio in the Old Town, with days in Granada, Ronda &amp; Caminito del Rey.</div></div>
+      <div class="phase"><div class="ico">🚢</div><div class="p-when">Dec 4–17</div><div class="p-title">The crossing</div><div class="p-desc">Azamara Quest — Málaga, Tangier, the Atlantic, San Juan, Miami.</div></div>
+      <div class="phase"><div class="ico">🏡</div><div class="p-when">Dec 17</div><div class="p-title">Home</div><div class="p-desc">Disembark in Miami, connect to Tampa the same afternoon.</div></div>
+    </div>
+  </section>
+
+  <!-- FLIGHTS -->
+  <section id="flights">
+    <div class="sec-head"><span class="no">02</span><h2>Flights</h2></div>
+    <p class="lead">Tampa to Málaga the long way — via Dallas and London — with an easy same-day hop home from Miami after the ship docks.</p>
+
+    <div class="card" style="margin-bottom:16px">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:6px">
+        <div class="cardtitle">Outbound · to Málaga</div>
+        
+      </div>
+      <div class="leg">
+        <div class="end"><div class="code">TPA</div><div class="time">9:24 AM</div><div class="date">Sat Nov 28</div></div>
+        <div class="mid"><div class="path"><span class="rule"></span>✈<span class="rule"></span></div><div class="fl">AA 1514 · Airbus A321</div><div class="op">American Airlines</div><div class="seats"><span class="cabin">Economy</span></div></div>
+        <div class="end"><div class="code">DFW</div><div class="time">11:21 AM</div><div class="date">Sat Nov 28</div></div>
+      </div>
+      <div class="leg">
+        <div class="end"><div class="code">DFW</div><div class="time">3:45 PM</div><div class="date">Sat Nov 28</div></div>
+        <div class="mid"><div class="path"><span class="rule"></span>✈<span class="rule"></span></div><div class="fl">AA 50 · Boeing 777-300ER</div><div class="op">American Airlines</div><div class="seats"><span class="cabin">Premium Economy</span></div></div>
+        <div class="end"><div class="code">LHR</div><div class="time">6:50 AM</div><div class="date">Sun Nov 29</div></div>
+      </div>
+      <div class="leg">
+        <div class="end"><div class="code">LHR</div><div class="time">8:20 AM</div><div class="date">Sun Nov 29</div></div>
+        <div class="mid"><div class="path"><span class="rule"></span>✈<span class="rule"></span></div><div class="fl">AA 6610 · Airbus A320neo</div><div class="op">Operated by British Airways (BA422)</div><div class="seats"><span class="cabin">Economy</span></div></div>
+        <div class="end"><div class="code">AGP</div><div class="time">12:15 PM</div><div class="date">Sun Nov 29</div></div>
+      </div>
+      <a class="btn" href="https://www.aa.com/reservation/view/find-your-trip" target="_blank" rel="noopener">Manage trip at aa.com →</a>
+    </div>
+
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:6px">
+        <div class="cardtitle">Return · Miami to home</div>
+        
+      </div>
+      <div class="leg">
+        <div class="end"><div class="code">MIA</div><div class="time">11:45 AM</div><div class="date">Thu Dec 17</div></div>
+        <div class="mid"><div class="path"><span class="rule"></span>✈<span class="rule"></span></div><div class="fl">AA 922 · Boeing 737-800</div><div class="op">American Airlines</div><div class="seats"><span class="cabin">Economy</span></div></div>
+        <div class="end"><div class="code">TPA</div><div class="time">1:01 PM</div><div class="date">Thu Dec 17</div></div>
+      </div>
+      <p style="font-size:.82rem;color:var(--foam-dim);margin:14px 0 0">Same-day connection: Azamara Quest arrives Miami 6:00 AM, giving a comfortable window before this 11:45 AM departure.</p>
+    </div>
+  </section>
+
+  <!-- HOTEL -->
+  <section id="hotel">
+    <div class="sec-head"><span class="no">03</span><h2>Málaga &amp; the hotel</h2></div>
+    <p class="lead">Four nights in the Old Town before you board — an 18th-century palace a few steps from the Picasso Museum.</p>
+    <div class="grid2">
+      <div class="card">
+        <span class="pill">Pre-cruise stay</span>
+        <div class="cardtitle" style="margin-top:12px">Palacio Solecio</div>
+        <div class="cardsub">Calle Granada 61, Málaga Centro, 29015 · 4-star</div>
+        <div class="kv"><span class="k">Check-in</span><span class="v">Sun, Nov 29 · 3:00 PM</span></div>
+        <div class="kv"><span class="k">Check-out</span><span class="v">Fri, Dec 4 · 12:00 PM</span></div>
+        <div class="kv"><span class="k">Room</span><span class="v">Deluxe Double · 1 King · City View, Tower</span></div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <a class="btn" href="https://palaciosolecio.com/" target="_blank" rel="noopener">Hotel website →</a>
+          <a class="btn" href="https://www.google.com/maps/search/?api=1&query=Palacio%20Solecio%20Calle%20Granada%2061%20M%C3%A1laga" target="_blank" rel="noopener">Map →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="cardtitle">Your room</div>
+        <div class="cardsub">248 sq ft · top floor · furnished patio with city views</div>
+        <p style="font-size:.9rem;color:var(--foam-dim);margin:0 0 14px">A soundproofed corner of a restored Andalusian palace: Egyptian cotton linens, a down duvet, minibar and espresso maker, marble bath with robes &amp; slippers, and a 24-hour rooftop-adjacent fitness center. Free WiFi throughout.</p>
+        <div class="kv"><span class="k">Neighborhood</span><span class="v">Málaga Centro · Old Town</span></div>
+        <div class="kv"><span class="k">Walk to</span><span class="v">Picasso Museum · Cathedral</span></div>
+        <div class="kv"><span class="k">Airport</span><span class="v">AGP · ~11 km</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DAYS ASHORE -->
+  <section id="ashore">
+    <div class="sec-head"><span class="no">04</span><h2>Days ashore in Andalucía</h2></div>
+    <p class="lead">From your calendar: five days based in Málaga, radiating out to Granada and Ronda. Short overviews of each stop, plus a few things worth adding.</p>
+
+    <div class="plan">
+
+      <div class="day brief">
+        <span class="brief-when">Sun · Nov 29</span>
+        <span class="brief-txt">Land at Málaga 12:15 PM, taxi to <b>Palacio Solecio</b> (~20 min), settle in. An easy first evening — dinner in the Old Town, a walk down Calle Larios under the Christmas lights.</span>
+      </div>
+
+      <div class="day">
+        <div class="day-head"><span class="when">Mon · Nov 30</span><h3>Málaga on foot</h3></div>
+        <p class="intro">Everything today is walkable from the hotel — a compact loop through Moorish, Roman and Picasso-era Málaga, ending at the waterfront.</p>
+        <ul class="sights">
+          <li><span class="nm">Alcazaba</span><span class="ov">11th-century Moorish fortress-palace rising above the center — layered gardens, courtyards and horseshoe arches, one of the best-preserved in Spain.</span></li>
+          <li><span class="nm">Roman Theatre</span><span class="ov">1st-century-BC theatre at the foot of the Alcazaba, rediscovered in 1951. Free to view; floodlit and photogenic at dusk.</span></li>
+          <li><span class="nm">Málaga Cathedral</span><span class="ov">Nicknamed "La Manquita" (the one-armed lady) for its unfinished second tower. The rooftop tour is the highlight — views over the city and port.</span></li>
+          <li><span class="nm">Gibralfaro Castle</span><span class="ov">The hilltop Moorish castle above the Alcazaba, linked by ramparts. The climb (or a short taxi) earns the best panorama of the harbor and bullring.</span></li>
+          <li><span class="nm">Picasso Museum</span><span class="ov">200+ works in the Renaissance Buenavista Palace, a few minutes from Picasso's birthplace on Plaza de la Merced.</span></li>
+          <li><span class="nm">Plaza de la Constitución &amp; Calle Larios</span><span class="ov">The main square and Málaga's elegant marble shopping street — especially lovely in early December with the light displays.</span></li>
+          <li><span class="nm">Muelle Uno</span><span class="ov">The revamped port promenade with the Pompidou "cube," waterfront dining and an easy sunset stroll back toward La Malagueta beach.</span></li>
+        </ul>
+        <div class="rec">
+          <div class="rh">Worth adding</div>
+          <ul>
+            <li>Early December means the <b>Calle Larios Christmas-lights show</b> — usually a nightly music-and-light spectacle. Time an evening around it.</li>
+            <li>Buy the <b>combined Alcazaba + Gibralfaro ticket</b> and do them as one uphill route to save doubling back.</li>
+            <li>Lunch at <b>Mercado de Atarazanas</b> (market tapas + vermouth), and try <b>espetos</b> — sardines skewered and grilled over driftwood — at a beach chiringuito in La Malagueta or Pedregalejo.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="day">
+        <div class="day-head"><span class="when">Tue · Dec 1</span><h3>Granada &amp; the Alhambra</h3></div>
+        <p class="intro">Private car from the hotel. Your <b>Alhambra admission is 11:00</b> (be on site by 10:00) — that time is the strict Nasrid Palaces entry slot. </p>
+        <ul class="sights">
+          <li><span class="nm">The Alhambra</span><span class="ov">The crown jewel of Moorish Spain: the Nasrid Palaces with their filigree stucco and the Court of the Lions, the Generalife gardens, and the Alcazaba fortress — all set against the Sierra Nevada.</span></li>
+          <li><span class="nm">Albaicín &amp; Mirador de San Nicolás</span><span class="ov">The whitewashed old Moorish quarter, with the famous viewpoint framing the Alhambra against the mountains — best near sunset.</span></li>
+          <li><span class="nm">Cathedral &amp; Royal Chapel</span><span class="ov">If time allows down in the center: the Renaissance cathedral and the tombs of Ferdinand and Isabella next door.</span></li>
+        </ul>
+        <div class="rec">
+          <div class="rh">Good to know</div>
+          <ul>
+            <li>Granada is ~1.5 hrs each way. Ask your driver to hold late-afternoon time for the <b>Albaicín and Mirador de San Nicolás</b> so you catch the Alhambra glowing at sunset.</li>
+            <li>The <b>timed Nasrid Palace entry is unforgiving</b> — miss the window and it's forfeited. Wear comfortable shoes; the grounds are large and hilly.</li>
+            <li>Granada still honors the <b>free-tapa-with-every-drink</b> tradition — an easy, cheap lunch between sights.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="day">
+        <div class="day-head"><span class="when">Wed · Dec 2</span><h3>Ronda</h3></div>
+        <p class="intro">One of Andalucía's most dramatic towns, split in two by a 120-meter gorge. About 1.5–2 hrs from Málaga through scenic mountain country.</p>
+        <ul class="sights">
+          <li><span class="nm">Puente Nuevo</span><span class="ov">The iconic 18th-century "New Bridge" spanning the El Tajo gorge — Ronda's signature image, connecting the old and new towns.</span></li>
+          <li><span class="nm">Mirador de Aldehuela</span><span class="ov">The viewpoint beside the bridge with the best head-on look down the gorge — the classic photo spot.</span></li>
+          <li><span class="nm">Casa Don Bosco</span><span class="ov">A genteel early-20th-century house with tiled terraces and gardens perched right on the cliff edge.</span></li>
+          <li><span class="nm">Alameda del Tajo</span><span class="ov">A leafy cliff-top promenade and park with balconies that hang out over the valley.</span></li>
+          <li><span class="nm">Old Town (La Ciudad)</span><span class="ov">The Moorish quarter across the bridge — Plaza Duquesa de Parcent, the Mondragón Palace, and quiet cobbled lanes.</span></li>
+        </ul>
+        <div class="rec">
+          <div class="rh">Worth adding</div>
+          <ul>
+            <li>Ronda's <b>Plaza de Toros</b> is one of the oldest and most storied bullrings in Spain, with a small museum — striking even just architecturally.</li>
+            <li>You're in <b>wine country</b> (D.O. Sierras de Málaga). Book a lunch at a restaurant with a terrace over El Tajo, or a short vineyard tasting nearby.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="day brief">
+        <span class="brief-when">Thu · Dec 3</span>
+        <span class="brief-txt"><b>Caminito del Rey</b> — your booked guided day trip through the gorge. Details in the <a href="#caminito">next section</a>.</span>
+      </div>
+
+      <div class="day brief">
+        <span class="brief-when">Fri · Dec 4</span>
+        <span class="brief-txt">Check out by noon and embark <b>Azamara Quest</b> — the ship sails from Málaga at 10:00 PM.</span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CAMINITO -->
+  <section id="caminito">
+    <div class="sec-head"><span class="no">05</span><h2>Caminito del Rey</h2></div>
+    <p class="lead">Your one pre-booked guided excursion — the cliffside boardwalk through the Gaitanes Gorge, with transport from Málaga.</p>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;align-items:flex-start">
+        <div>
+          <span class="pill">Guided day trip</span>
+          <div class="cardtitle" style="margin-top:12px">From Málaga: Caminito del Rey with transport</div>
+          <div class="cardsub">Operated by Aloratur</div>
+        </div>
+        
+      </div>
+      <div class="grid2" style="margin-top:6px">
+        <div>
+          <div class="kv"><span class="k">Date</span><span class="v">Thursday, Dec 3, 2026</span></div>
+          <div class="kv"><span class="k">Tour start</span><span class="v">8:30 AM</span></div>
+          <div class="kv"><span class="k">Pickup</span><span class="v">8:10 AM</span></div>
+        </div>
+        <div>
+          <div class="kv"><span class="k">Meeting point</span><span class="v">Oficina de Info. Turística, Pl. de la Marina 11</span></div>
+          <div class="kv"><span class="k">Operator</span><span class="v">Aloratur · +34 951 204 783</span></div>
+          <div class="kv"><span class="k">Email</span><span class="v"><a href="mailto:reservas@aloratur.com">reservas@aloratur.com</a></span></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <a class="btn" href="https://www.aloratur.com" target="_blank" rel="noopener">Operator site →</a>
+        <a class="btn" href="https://www.google.com/maps/search/?api=1&query=Oficina%20de%20Informaci%C3%B3n%20Tur%C3%ADstica%20M%C3%A1laga%20Plaza%20de%20la%20Marina" target="_blank" rel="noopener">Pickup map →</a>
+      </div>
+      <p style="font-size:.82rem;color:var(--foam-dim);margin:16px 0 0">Wear sturdy shoes — it's a ~7.7 km walk on boardwalks pinned to the gorge wall, with a helmet provided. Falls on the day before checkout, so you're back in Málaga to pack for embarkation.</p>
+    </div>
+  </section>
+
+  <!-- CROSSING -->
+  <section id="crossing">
+    <div class="sec-head"><span class="no">06</span><h2>The crossing</h2></div>
+    <p class="lead">A true repositioning voyage: two Mediterranean ports, ten days of open Atlantic, then San Juan and home to Miami. This is the heart of the trip.</p>
+
+    <div class="grid2" style="margin-bottom:18px">
+      <div class="card">
+        <div class="cardtitle">Azamara Quest</div>
+        <div class="cardsub">Transatlantic: Málaga, San Juan &amp; Miami · 13-night cruise</div>
+        <div class="kv"><span class="k">Stateroom</span><span class="v">Club Veranda Plus</span></div>
+        <div class="kv"><span class="k">Insurance</span><span class="v">World Trips Comprehensive — included</span></div>
+        <a class="btn" href="https://www.azamara.com/home" target="_blank" rel="noopener">Azamara website →</a>
+      </div>
+      <div class="card" style="display:flex;flex-direction:column;justify-content:center">
+        <div style="display:flex;gap:22px;flex-wrap:wrap">
+          <div><div class="glance" style="margin:0;border:0;background:none"></div>
+            <div style="font-family:'Fraunces',serif;font-size:2.4rem;color:var(--brass-soft);line-height:1">4</div>
+            <div style="font-size:.76rem;letter-spacing:.1em;text-transform:uppercase;color:var(--foam-dim)">Ports of call</div>
+          </div>
+          <div>
+            <div style="font-family:'Fraunces',serif;font-size:2.4rem;color:var(--brass-soft);line-height:1">10</div>
+            <div style="font-size:.76rem;letter-spacing:.1em;text-transform:uppercase;color:var(--foam-dim)">Days at sea</div>
+          </div>
+          <div>
+            <div style="font-family:'Fraunces',serif;font-size:2.4rem;color:var(--brass-soft);line-height:1">≈3,800</div>
+            <div style="font-size:.76rem;letter-spacing:.1em;text-transform:uppercase;color:var(--foam-dim)">Nautical miles</div>
+          </div>
+        </div>
+        <p style="font-size:.85rem;color:var(--foam-dim);margin:18px 0 0">Málaga → Tangier → the Atlantic → San Juan → Miami. The long middle stretch is all sea — pack for slow mornings and long horizons.</p>
+      </div>
+    </div>
+
+    <div class="voyage" id="voyage">
+      <div class="v-day port">
+        <div class="v-date"><b>Fri, Dec 4</b>Day 1</div><div class="v-mark">⚓</div>
+        <div><div class="place">Málaga</div><div class="v-note">Embark · ship sails 10:00 PM</div></div><div class="v-tag">Embark</div>
+      </div>
+      <div class="v-day port">
+        <div class="v-date"><b>Sat, Dec 5</b>Day 2</div><div class="v-mark">⚓</div>
+        <div><div class="place">Tangier</div><div class="v-note">7:30 AM – 1:00 PM · Morocco</div></div><div class="v-tag">Port</div>
+      </div>
+
+      <button class="seatoggle" id="seaToggle" aria-expanded="false" aria-controls="seaDays">
+        <span class="chev">▸</span> <span>Show the 8-day Atlantic crossing (Dec 6–13)</span>
+      </button>
+      <div id="seaDays" class="sea-hidden">
+        <div class="v-day sea"><div class="v-date"><b>Sun, Dec 6</b>Day 3</div><div class="v-mark">〜</div><div><div class="place">At Sea</div></div><div class="v-tag">At Sea</div></div>
+        <div class="v-day sea"><div class="v-date"><b>Mon, Dec 7</b>Day 4</div><div class="v-mark">〜</div><div><div class="place">At Sea</div></div><div class="v-tag">At Sea</div></div>
+        <div class="v-day sea"><div class="v-date"><b>Tue, Dec 8</b>Day 5</div><div class="v-mark">〜</div><div><div class="place">At Sea</div></div><div class="v-tag">At Sea</div></div>
+        <div class="v-day sea"><div class="v-date"><b>Wed, Dec 9</b>Day 6</div><div class="v-mark">〜</div><div><div class="place">At Sea</div></div><div class="v-tag">At Sea</div></div>
+        <div class="v-day sea"><div class="v-date"><b>Thu, Dec 10</b>Day 7</div><div class="v-mark">〜</div><div><div class="place">At Sea</div></div><div class="v-tag">At Sea</div></div>
+        <div class="v-day sea"><div class="v-date"><b>Fri, Dec 11</b>Day 8</div><div class="v-mark">〜</div><div><div class="place">At Sea</div></div><div class="v-tag">At Sea</div></div>
+        <div class="v-day sea"><div class="v-date"><b>Sat, Dec 12</b>Day 9</div><div class="v-mark">〜</div><div><div class="place">At Sea</div></div><div class="v-tag">At Sea</div></div>
+        <div class="v-day sea"><div class="v-date"><b>Sun, Dec 13</b>Day 10</div><div class="v-mark">〜</div><div><div class="place">At Sea</div></div><div class="v-tag">At Sea</div></div>
+      </div>
+
+      <div class="v-day port">
+        <div class="v-date"><b>Mon, Dec 14</b>Day 11</div><div class="v-mark">⚓</div>
+        <div><div class="place">San Juan</div><div class="v-note">9:00 AM – 5:00 PM · Puerto Rico</div></div><div class="v-tag">Port</div>
+      </div>
+      <div class="v-day sea"><div class="v-date"><b>Tue, Dec 15</b>Day 12</div><div class="v-mark">〜</div><div><div class="place">At Sea</div></div><div class="v-tag">At Sea</div></div>
+      <div class="v-day sea"><div class="v-date"><b>Wed, Dec 16</b>Day 13</div><div class="v-mark">〜</div><div><div class="place">At Sea</div></div><div class="v-tag">At Sea</div></div>
+      <div class="v-day port">
+        <div class="v-date"><b>Thu, Dec 17</b>Day 14</div><div class="v-mark">⚓</div>
+        <div><div class="place">Miami, Florida</div><div class="v-note">Arrive 6:00 AM · disembark</div></div><div class="v-tag">Disembark</div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="agent">
+      <span>Booked through</span>
+      <b>Bruce Raber · Lap of Luxury Travel</b>
+      <a href="mailto:bruce@lapofluxurytravel.com">bruce@lapofluxurytravel.com</a>
+      <a href="tel:+18004626807">+1 (800) 462-6807</a>
+      <a href="http://www.lapofluxurytravel.com" target="_blank" rel="noopener">lapofluxurytravel.com</a>
+    </div>
+    <p class="fine">A shared overview of our trip — itinerary and timings may shift slightly. Booking references and personal details have been left out of this version.</p>
+  </footer>
+</main>
+
+<script>
+(function(){
+  "use strict";
+
+  // ---- Countdown to Tampa departure: 2026-11-28 09:24 ET (UTC-5) ----
+  var target = new Date("2026-11-28T09:24:00-05:00").getTime();
+  var d=document.querySelector("[data-d]"),h=document.querySelector("[data-h]"),m=document.querySelector("[data-m]"),note=document.getElementById("countnote");
+  function tick(){
+    var now=Date.now(), diff=target-now;
+    if(diff<=0){ if(d)d.textContent="0"; if(h)h.textContent="0"; if(m)m.textContent="0"; if(note)note.textContent="Bon voyage — safe travels!"; return; }
+    var days=Math.floor(diff/86400000);
+    var hrs=Math.floor(diff%86400000/3600000);
+    var mins=Math.floor(diff%3600000/60000);
+    if(d)d.textContent=days; if(h)h.textContent=hrs; if(m)m.textContent=mins;
+  }
+  tick(); setInterval(tick,30000);
+
+  // ---- Copy-to-clipboard on confirmation codes ----
+  document.querySelectorAll(".copy").forEach(function(btn){
+    btn.addEventListener("click",function(){
+      var val=btn.getAttribute("data-copy");
+      var done=function(){ btn.textContent="✓"; btn.classList.add("done"); setTimeout(function(){btn.textContent="⧉";btn.classList.remove("done");},1400); };
+      if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(val).then(done).catch(fallback); }
+      else fallback();
+      function fallback(){ var t=document.createElement("textarea"); t.value=val; document.body.appendChild(t); t.select(); try{document.execCommand("copy");}catch(e){} document.body.removeChild(t); done(); }
+    });
+  });
+
+  // ---- Sea-days toggle ----
+  var st=document.getElementById("seaToggle"), sd=document.getElementById("seaDays");
+  if(st&&sd){
+    st.addEventListener("click",function(){
+      var open=st.getAttribute("aria-expanded")==="true";
+      st.setAttribute("aria-expanded",String(!open));
+      sd.classList.toggle("sea-hidden",open);
+      st.querySelector("span:last-child").textContent = open ? "Show the 8-day Atlantic crossing (Dec 6–13)" : "Hide the Atlantic crossing";
+    });
+  }
+
+  // ---- Checklist (in-memory) ----
+  document.querySelectorAll("#checklist li").forEach(function(li){
+    li.setAttribute("tabindex","0"); li.setAttribute("role","checkbox"); li.setAttribute("aria-checked","false");
+    function toggle(){ var on=li.classList.toggle("on"); li.setAttribute("aria-checked",String(on)); }
+    li.addEventListener("click",toggle);
+    li.addEventListener("keydown",function(e){ if(e.key===" "||e.key==="Enter"){ e.preventDefault(); toggle(); }});
+  });
+
+  // ---- Active section highlight in sticky nav ----
+  var links=Array.prototype.slice.call(document.querySelectorAll("nav.jump a"));
+  var map={}; links.forEach(function(a){ map[a.getAttribute("href").slice(1)]=a; });
+  if("IntersectionObserver" in window){
+    var obs=new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting){ links.forEach(function(l){l.classList.remove("active");}); var a=map[en.target.id]; if(a)a.classList.add("active"); }
+      });
+    },{rootMargin:"-45% 0px -50% 0px",threshold:0});
+    document.querySelectorAll("main section").forEach(function(s){obs.observe(s);});
+  }
+})();
+</script>
+</body>
+</html>
