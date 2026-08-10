@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>New Year at Sea · Voyage Dossier</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B2740;--abyss:#071B2E;--panel:#0F3050;--panel-2:#12395E;
+    --brass:#C9A85C;--brass-soft:#E4CD97;--foam:#E9F0F3;--foam-dim:#A9C0CE;
+    --coral:#E58A63;--line:rgba(201,168,92,.22);--line-soft:rgba(169,192,206,.14);
+    --sea-row:rgba(169,192,206,.05);--shadow:0 18px 50px -22px rgba(0,0,0,.7);--r:14px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+  body{margin:0;color:var(--foam);font-family:'Inter',system-ui,-apple-system,sans-serif;font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;background-attachment:fixed;
+    background:
+      radial-gradient(1200px 620px at 78% -8%, #123a5e 0%, rgba(18,58,94,0) 60%),
+      radial-gradient(900px 500px at 0% 100%, #0a2033 0%, rgba(10,32,51,0) 55%),
+      var(--ink);}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 22px}
+  a{color:var(--brass-soft);text-decoration:none}
+  a:hover{color:#fff;text-decoration:underline;text-underline-offset:3px}
+  h1,h2,h3{font-family:'Fraunces',Georgia,serif;font-weight:600;line-height:1.08;margin:0}
+  .eyebrow{font-size:11.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--brass);font-weight:600}
+  code,.mono{font-family:ui-monospace,'SF Mono',Menlo,Consolas,monospace}
+
+  header.mast{position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
+  .mast-grid{position:absolute;inset:0;opacity:.5;background-image:linear-gradient(var(--line-soft) 1px,transparent 1px),linear-gradient(90deg,var(--line-soft) 1px,transparent 1px);background-size:44px 44px;mask-image:linear-gradient(180deg,#000 0%,transparent 88%)}
+  .mast-inner{position:relative;padding:52px 0 40px}
+  .mast .eyebrow{display:flex;align-items:center;gap:11px}
+  .mast .eyebrow::after{content:"";height:1px;flex:1;max-width:170px;background:var(--line)}
+  h1{font-size:clamp(2.9rem,8vw,5.3rem);letter-spacing:-.01em;margin:.28em 0 .12em}
+  h1 .arrow{color:var(--brass);font-family:'Inter',sans-serif;font-weight:400;padding:0 .12em}
+  .sub{font-size:clamp(1rem,2.4vw,1.28rem);color:var(--foam-dim);font-family:'Fraunces',serif;font-weight:400;font-style:italic}
+  .voyagers{margin-top:14px;font-size:.9rem;letter-spacing:.02em;color:var(--foam)}
+  .voyagers b{color:#fff}
+  .count{display:flex;gap:10px;margin-top:26px;flex-wrap:wrap}
+  .count .cell{background:linear-gradient(180deg,var(--panel),var(--abyss));border:1px solid var(--line);border-radius:12px;padding:12px 16px;min-width:78px;text-align:center;box-shadow:var(--shadow)}
+  .count .num{font-family:'Fraunces',serif;font-size:1.9rem;font-weight:600;color:var(--brass-soft);line-height:1}
+  .count .lab{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--foam-dim);margin-top:6px}
+  .count-note{font-size:.82rem;color:var(--foam-dim);margin-top:12px}
+  .glance{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-top:30px}
+  .glance div{background:var(--ink);padding:16px 18px}
+  .glance .k{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--brass)}
+  .glance .v{font-family:'Fraunces',serif;font-size:1.35rem;margin-top:5px}
+  .glance .v small{display:block;font-family:'Inter';font-size:.72rem;color:var(--foam-dim);letter-spacing:.02em;margin-top:3px}
+  @media(max-width:680px){.glance{grid-template-columns:repeat(2,1fr)}h1{margin-top:.2em}}
+
+  nav.jump{position:sticky;top:0;z-index:20;background:rgba(7,27,46,.82);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  nav.jump ul{list-style:none;margin:0;padding:0;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+  nav.jump ul::-webkit-scrollbar{display:none}
+  nav.jump a{display:block;white-space:nowrap;padding:14px 15px;font-size:.82rem;letter-spacing:.03em;color:var(--foam-dim);border-bottom:2px solid transparent;font-weight:500}
+  nav.jump a:hover{color:var(--foam);text-decoration:none}
+  nav.jump a.active{color:var(--brass-soft);border-bottom-color:var(--brass)}
+
+  section{padding:52px 0 8px;scroll-margin-top:56px}
+  .sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:24px}
+  .sec-head .no{font-family:'Fraunces',serif;font-size:.95rem;color:var(--brass);font-weight:600;letter-spacing:.05em}
+  .sec-head h2{font-size:clamp(1.6rem,4vw,2.15rem)}
+  .lead{color:var(--foam-dim);max-width:64ch;margin:-8px 0 26px;font-size:1.02rem}
+  .card{background:linear-gradient(180deg,var(--panel) 0%,var(--abyss) 130%);border:1px solid var(--line);border-radius:var(--r);padding:22px 24px;box-shadow:var(--shadow)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:720px){.grid2{grid-template-columns:1fr}}
+  .cardtitle{font-family:'Fraunces',serif;font-size:1.4rem;margin-bottom:2px}
+  .cardsub{color:var(--foam-dim);font-size:.9rem;margin-bottom:16px}
+  .kv{display:flex;justify-content:space-between;gap:16px;padding:9px 0;border-top:1px solid var(--line-soft);font-size:.92rem}
+  .kv:first-child{border-top:0}
+  .kv .k{color:var(--foam-dim)}
+  .kv .v{text-align:right;color:var(--foam);font-weight:500}
+  .pill{display:inline-block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--brass);border:1px solid var(--line);border-radius:100px;padding:3px 11px}
+  .conf{display:inline-flex;align-items:center;gap:8px;background:var(--abyss);border:1px solid var(--line);border-radius:9px;padding:5px 8px 5px 12px;font-size:.86rem}
+  .conf .lbl{font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--foam-dim)}
+  .conf .val{font-family:ui-monospace,Menlo,monospace;color:var(--brass-soft);font-weight:500}
+  .copy{border:1px solid var(--line);background:transparent;color:var(--foam-dim);border-radius:6px;width:26px;height:24px;cursor:pointer;font-size:.7rem;display:inline-flex;align-items:center;justify-content:center;transition:.15s}
+  .copy:hover{color:#fff;border-color:var(--brass)}
+  .copy.done{color:#7ad19a;border-color:#7ad19a}
+  .btn{display:inline-flex;align-items:center;gap:8px;margin-top:16px;border:1px solid var(--brass);color:var(--brass-soft);border-radius:10px;padding:9px 16px;font-size:.85rem;font-weight:500;transition:.15s}
+  .btn:hover{background:var(--brass);color:var(--abyss);text-decoration:none}
+
+  /* highlights */
+  .hl{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:4px}
+  @media(max-width:720px){.hl{grid-template-columns:1fr}}
+  .hl .h{background:var(--abyss);border:1px solid var(--line-soft);border-radius:12px;padding:16px 18px}
+  .hl .ic{font-size:1.3rem}
+  .hl .t{font-family:'Fraunces',serif;font-size:1.15rem;margin-top:8px}
+  .hl .d{font-size:.84rem;color:var(--foam-dim);margin-top:4px}
+
+  /* voyage timeline */
+  .voyage{border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--abyss);margin-top:16px}
+  .v-day{display:grid;grid-template-columns:104px 30px 1fr auto;align-items:center;gap:14px;padding:14px 20px;border-top:1px solid var(--line-soft)}
+  .v-day:first-child{border-top:0}
+  .v-day.port{background:linear-gradient(90deg,rgba(201,168,92,.10),rgba(201,168,92,0) 60%)}
+  .v-date{font-size:.76rem;color:var(--foam-dim)}
+  .v-date b{display:block;color:var(--foam);font-family:'Fraunces',serif;font-size:.95rem;font-weight:500}
+  .v-mark{display:flex;align-items:center;justify-content:center;font-size:1.05rem}
+  .v-day.port .v-mark{color:var(--brass)}
+  .v-day.sea .v-mark{color:var(--foam-dim);opacity:.6}
+  .place{font-family:'Fraunces',serif;font-size:1.12rem}
+  .v-day.port .place{color:#fff}.v-day.sea .place{color:var(--foam-dim)}
+  .v-note{font-size:.78rem;color:var(--foam-dim);margin-top:1px}
+  .v-tag{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--brass);white-space:nowrap}
+  .v-day.sea .v-tag{color:var(--foam-dim);opacity:.7}
+  @media(max-width:560px){.v-day{grid-template-columns:88px 24px 1fr}.v-tag{grid-column:1 / -1;padding-left:102px;margin-top:-6px}}
+
+  /* ports */
+  .sights{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:12px}
+  .sights li{padding-left:22px;position:relative}
+  .sights li::before{content:"";position:absolute;left:2px;top:8px;width:7px;height:7px;border:1.5px solid var(--brass);border-radius:2px;transform:rotate(45deg)}
+  .sights .nm{font-weight:600;color:#fff}
+  .sights .nm::after{content:" — ";color:var(--foam-dim);font-weight:400}
+  .sights .ov{color:var(--foam-dim);font-size:.9rem}
+  .rec{margin-top:18px;border-left:2px solid var(--brass);background:rgba(201,168,92,.06);border-radius:0 10px 10px 0;padding:13px 17px}
+  .rec .rh{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--brass-soft);font-weight:600;margin-bottom:7px}
+  .rec ul{margin:0;padding-left:17px;font-size:.88rem;color:var(--foam)}
+  .rec li{margin:4px 0}
+  .fnote{font-size:.8rem;color:var(--foam-dim);margin-top:14px;border-left:2px solid var(--line);padding-left:12px}
+
+  footer{margin-top:60px;border-top:1px solid var(--line);padding:34px 0 60px}
+  .agent{display:flex;flex-wrap:wrap;gap:6px 22px;align-items:center;font-size:.9rem;color:var(--foam-dim)}
+  .agent b{color:#fff;font-family:'Fraunces',serif;font-size:1.05rem;font-weight:500}
+  .fine{font-size:.76rem;color:var(--foam-dim);margin-top:18px;line-height:1.7;opacity:.8}
+  :focus-visible{outline:2px solid var(--brass-soft);outline-offset:3px;border-radius:4px}
+  ::selection{background:var(--brass);color:var(--abyss)}
+</style>
+</head>
+<body>
+
+<header class="mast">
+  <div class="mast-grid" aria-hidden="true"></div>
+  <div class="wrap mast-inner">
+    <div class="eyebrow">Voyage Dossier · New Year at Sea</div>
+    <h1>Miami<span class="arrow">→</span>Bahamas</h1>
+    <div class="sub">Ringing in 2027 aboard Freedom of the Seas — CocoCay, a sea day, and Nassau.</div>
+    <div class="voyagers">Prepared for <b>Cary Flynn</b> &amp; <b>Zully Fernandez</b> · 31 Dec 2026 – 4 Jan 2027</div>
+
+    <div class="count" id="countdown" aria-label="Countdown to boarding">
+      <div class="cell"><div class="num" data-d>—</div><div class="lab">Days</div></div>
+      <div class="cell"><div class="num" data-h>—</div><div class="lab">Hours</div></div>
+      <div class="cell"><div class="num" data-m>—</div><div class="lab">Minutes</div></div>
+    </div>
+    <div class="count-note" id="countnote">until boarding in Miami</div>
+
+    <div class="glance">
+      <div><div class="k">Ship</div><div class="v">Freedom of the Seas<small>Royal Caribbean</small></div></div>
+      <div><div class="k">Length</div><div class="v">4 nights<small>Round-trip from Miami</small></div></div>
+      <div><div class="k">Ports</div><div class="v">CocoCay · Nassau<small>plus one sea day</small></div></div>
+      <div><div class="k">Stateroom</div><div class="v">Ocean View Balcony<small>Ocean View · Category 4B</small></div></div>
+    </div>
+  </div>
+</header>
+
+<nav class="jump">
+  <div class="wrap">
+    <ul>
+      <li><a href="#overview">Overview</a></li>
+      <li><a href="#cruise">The Cruise</a></li>
+      <li><a href="#ports">Ports</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main class="wrap">
+
+  <section id="overview">
+    <div class="sec-head"><span class="no">01</span><h2>A New Year's escape</h2></div>
+    <p class="lead">Four easy nights round-trip from Miami — sail out on New Year's Eve, wake up on a private island, and see in 2027 somewhere between the beach and the buffet. Just the cruise for now; flights and any pre-cruise nights can be added later.</p>
+    <div class="hl">
+      <div class="h"><div class="ic">🎆</div><div class="t">NYE at sea</div><div class="d">Board midday Dec 31 and sail at 4:30 PM — ring in the new year onboard.</div></div>
+      <div class="h"><div class="ic">🏝️</div><div class="t">Perfect Day at CocoCay</div><div class="d">Royal Caribbean's private Bahamian island — waterpark, beaches, and pools.</div></div>
+      <div class="h"><div class="ic">⚓</div><div class="t">Nassau</div><div class="d">Bahamian capital — forts, beaches, and Paradise Island across the bridge.</div></div>
+    </div>
+  </section>
+
+  <section id="cruise">
+    <div class="sec-head"><span class="no">02</span><h2>The cruise</h2></div>
+    <p class="lead">Freedom of the Seas — "Bahamas &amp; Perfect Day Cruise," a 4-night round-trip loop out of the Port of Miami.</p>
+
+    <div class="grid2" style="margin-bottom:18px">
+      <div class="card">
+        <span class="pill">Your sailing</span>
+        <div class="cardtitle" style="margin-top:12px">Freedom of the Seas</div>
+        <div class="cardsub">Royal Caribbean International · 4-night cruise</div>
+        <div class="kv"><span class="k">Route</span><span class="v">Miami · CocoCay · Sea · Nassau · Miami</span></div>
+        <div class="kv"><span class="k">Sail dates</span><span class="v">Thu Dec 31, 2026 → Mon Jan 4, 2027</span></div>
+        <a class="btn" href="https://www.royalcaribbean.com/account/signin" target="_blank" rel="noopener">Manage on royalcaribbean.com →</a>
+      </div>
+      <div class="card">
+        <span class="pill">Your stateroom</span>
+        <div class="cardtitle" style="margin-top:12px">Spacious Ocean View Balcony</div>
+        <div class="cardsub">Category 4B</div>
+        <div class="kv"><span class="k">Size</span><span class="v">207 sq ft + 42 sq ft balcony</span></div>
+        <div class="kv"><span class="k">Beds</span><span class="v">Royal King (converts to twins) + sofa bed</span></div>
+        <div class="kv"><span class="k">Sleeps</span><span class="v">Up to 4 · ocean view</span></div>
+        <div class="kv"><span class="k">Includes</span><span class="v">Attendant, HD-TV, safe, hair dryer, toiletries</span></div>
+      </div>
+    </div>
+
+    <div class="voyage" id="voyage">
+      <div class="v-day port">
+        <div class="v-date"><b>Thu, Dec 31</b>Day 1</div><div class="v-mark">⚓</div>
+        <div><div class="place">Miami, Florida</div><div class="v-note">Board 12:00 PM · sail 4:30 PM · New Year's Eve aboard</div></div><div class="v-tag">Embark</div>
+      </div>
+      <div class="v-day port">
+        <div class="v-date"><b>Fri, Jan 1</b>Day 2</div><div class="v-mark">🏝️</div>
+        <div><div class="place">Perfect Day at CocoCay</div><div class="v-note">Bahamas · 7:00 AM – 5:00 PM*</div></div><div class="v-tag">Port</div>
+      </div>
+      <div class="v-day sea">
+        <div class="v-date"><b>Sat, Jan 2</b>Day 3</div><div class="v-mark">〜</div>
+        <div><div class="place">At Sea</div></div><div class="v-tag">At Sea</div>
+      </div>
+      <div class="v-day port">
+        <div class="v-date"><b>Sun, Jan 3</b>Day 4</div><div class="v-mark">⚓</div>
+        <div><div class="place">Nassau, Bahamas</div><div class="v-note">7:30 AM – 5:30 PM</div></div><div class="v-tag">Port</div>
+      </div>
+      <div class="v-day port">
+        <div class="v-date"><b>Mon, Jan 4</b>Day 5</div><div class="v-mark">⚓</div>
+        <div><div class="place">Miami, Florida</div><div class="v-note">Arrive 6:00 AM · disembark</div></div><div class="v-tag">Disembark</div>
+      </div>
+    </div>
+    <p class="fnote">*The itinerary email listed the 7:00 AM–5:00 PM hours against the sea day; CocoCay is almost certainly the daytime call. Worth confirming the exact port hours with Royal Caribbean or Bruce.</p>
+    <p class="fnote">Travel docs: this is a closed-loop cruise (departs and returns to Miami), so a passport is recommended but U.S. citizens can generally sail with a birth certificate plus government photo ID. Confirm what you'll carry before sailing.</p>
+  </section>
+
+  <section id="ports">
+    <div class="sec-head"><span class="no">03</span><h2>Ports of call</h2></div>
+    <p class="lead">Two very different Bahamian stops — a curated private-island day and the real, historic capital.</p>
+
+    <div class="card" style="margin-bottom:16px">
+      <div class="cardtitle">Perfect Day at CocoCay</div>
+      <div class="cardsub">Royal Caribbean's private island · Fri, Jan 1</div>
+      <ul class="sights">
+        <li><span class="nm">Thrill Waterpark</span><span class="ov">Home to Daredevil's Peak, the tallest waterslide in North America, plus a wave pool and dozens of slides (separate ticket).</span></li>
+        <li><span class="nm">Oasis Lagoon</span><span class="ov">The largest freshwater pool in the Caribbean, with a swim-up bar — included.</span></li>
+        <li><span class="nm">Up, Up &amp; Away</span><span class="ov">A helium balloon ride to ~450 feet for island-and-sea views (separate ticket).</span></li>
+        <li><span class="nm">Beaches &amp; clubs</span><span class="ov">Chill Island and South Beach are included; Coco Beach Club and Overwater Cabanas are the premium add-ons.</span></li>
+      </ul>
+      <div class="rec">
+        <div class="rh">Worth knowing</div>
+        <ul>
+          <li>Lunch and the beaches/pools are <b>included</b>; the waterpark, cabanas, and balloon are extra — and they sell out, so book before you sail if you want them.</li>
+          <li>It's a <b>dock-and-walk</b> island (no tender), so you can come and go from the ship all day — easy to grab a quiet morning beach before the crowds.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="cardtitle">Nassau</div>
+      <div class="cardsub">New Providence, Bahamas · Sun, Jan 3</div>
+      <ul class="sights">
+        <li><span class="nm">Paradise Island &amp; Atlantis</span><span class="ov">Across the bridge — the famous resort, its aquarium and water park (day passes available), and Royal Caribbean's new Royal Beach Club.</span></li>
+        <li><span class="nm">Queen's Staircase &amp; Fort Fincastle</span><span class="ov">66 steps carved from limestone leading up to an 18th-century fort with harbor views.</span></li>
+        <li><span class="nm">Junkanoo &amp; Cable Beach</span><span class="ov">Lively town beach steps from the port, or the longer stretch of Cable Beach a short ride west.</span></li>
+        <li><span class="nm">Straw Market &amp; downtown</span><span class="ov">Bahamian crafts, conch fritters, and colonial architecture within walking distance of the pier.</span></li>
+      </ul>
+      <div class="rec">
+        <div class="rh">Worth adding</div>
+        <ul>
+          <li>Popular excursions book up fast over the holidays — swim-with-pigs day trips, Blue Lagoon, and Atlantis Aquaventure are the classics.</li>
+          <li>For a low-effort beach day, the <b>Royal Beach Club</b> or a Paradise Island beach pass keeps it simple and close.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="agent">
+      <span>Booked through</span>
+      <b>Lap of Luxury Travel</b>
+      <a href="mailto:Bruce@lapofluxurytravel.com">Bruce@lapofluxurytravel.com</a>
+      <a href="tel:+18004626807">1-800-462-6807</a>
+      <a href="http://www.lapofluxurytravel.com" target="_blank" rel="noopener">lapofluxurytravel.com</a>
+    </div>
+    <p class="fine">A shared overview of our New Year's cruise. Cruise only — flights and any pre-cruise stay not yet included. Booking references and cabin details have been left out of this shared version. Always confirm details with Royal Caribbean and the travel agent before you travel. Not an official travel document.</p>
+  </footer>
+</main>
+
+<script>
+(function(){
+  "use strict";
+  var target=new Date("2026-12-31T12:00:00-05:00").getTime();
+  var d=document.querySelector("[data-d]"),h=document.querySelector("[data-h]"),m=document.querySelector("[data-m]"),note=document.getElementById("countnote");
+  function tick(){
+    var diff=target-Date.now();
+    if(diff<=0){if(d)d.textContent="0";if(h)h.textContent="0";if(m)m.textContent="0";if(note)note.textContent="Happy New Year — bon voyage!";return;}
+    if(d)d.textContent=Math.floor(diff/86400000);
+    if(h)h.textContent=Math.floor(diff%86400000/3600000);
+    if(m)m.textContent=Math.floor(diff%3600000/60000);
+  }
+  tick();setInterval(tick,30000);
+
+  document.querySelectorAll(".copy").forEach(function(btn){
+    btn.addEventListener("click",function(){
+      var val=btn.getAttribute("data-copy");
+      var done=function(){btn.textContent="✓";btn.classList.add("done");setTimeout(function(){btn.textContent="⧉";btn.classList.remove("done");},1400);};
+      if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(val).then(done).catch(fb);}else fb();
+      function fb(){var t=document.createElement("textarea");t.value=val;document.body.appendChild(t);t.select();try{document.execCommand("copy");}catch(e){}document.body.removeChild(t);done();}
+    });
+  });
+
+  var links=[].slice.call(document.querySelectorAll("nav.jump a"));
+  var map={};links.forEach(function(a){map[a.getAttribute("href").slice(1)]=a;});
+  if("IntersectionObserver" in window){
+    var obs=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){links.forEach(function(l){l.classList.remove("active");});var a=map[en.target.id];if(a)a.classList.add("active");}});},{rootMargin:"-45% 0px -50% 0px",threshold:0});
+    document.querySelectorAll("main section").forEach(function(s){obs.observe(s);});
+  }
+})();
+</script>
+</body>
+</html>
