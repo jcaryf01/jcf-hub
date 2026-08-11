@@ -4,31 +4,155 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
-<title>Fish Log · JCF</title>
+<title>Florida Critter Catalog · JCF</title>
 <link rel="stylesheet" href="/assets/hub.css">
+<style>
+  .intro{color:var(--foam-dim);max-width:60ch;margin:6px 0 0;font-size:1rem}
+  .filters{display:flex;gap:8px;flex-wrap:wrap;margin:26px 0 20px}
+  .filters button{font-family:inherit;font-size:.85rem;letter-spacing:.02em;color:var(--foam-dim);
+    background:transparent;border:1px solid var(--line);border-radius:100px;padding:8px 16px;cursor:pointer;transition:.15s}
+  .filters button:hover{color:var(--foam);border-color:var(--brass)}
+  .filters button.on{background:var(--brass);color:var(--abyss);border-color:var(--brass);font-weight:600}
+  .filters .count{opacity:.6;font-size:.78rem;margin-left:4px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+  .cell{position:relative;aspect-ratio:1/1;border-radius:12px;overflow:hidden;border:1px solid var(--line-soft);
+    background:var(--abyss);cursor:pointer;box-shadow:var(--shadow)}
+  .cell img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s ease;background:var(--panel)}
+  .cell:hover img{transform:scale(1.06)}
+  .cell::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,27,46,0) 50%,rgba(7,27,46,.62));opacity:0;transition:.2s}
+  .cell:hover::after,.cell:focus::after{opacity:1}
+  .cell .cap{position:absolute;left:10px;right:10px;bottom:9px;font-size:.82rem;font-weight:500;color:#fff;opacity:0;transform:translateY(4px);transition:.2s;z-index:2;text-shadow:0 1px 4px rgba(0,0,0,.7)}
+  .cell:hover .cap,.cell:focus .cap{opacity:1;transform:none}
+  .tag-badge{position:absolute;top:9px;left:9px;z-index:2;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--brass-soft);background:rgba(7,27,46,.72);border:1px solid var(--line);border-radius:100px;padding:3px 9px}
+  .lb{position:fixed;inset:0;z-index:100;background:rgba(4,14,24,.94);backdrop-filter:blur(6px);
+    display:none;align-items:center;justify-content:center;padding:24px}
+  .lb.open{display:flex}
+  .lb img{max-width:92vw;max-height:80vh;border-radius:10px;box-shadow:0 30px 80px -20px rgba(0,0,0,.8);object-fit:contain}
+  .lb .cap{position:absolute;bottom:20px;left:0;right:0;text-align:center;color:var(--foam);font-size:.95rem;padding:0 20px;font-weight:500}
+  .lb button{position:absolute;background:rgba(15,48,80,.7);border:1px solid var(--line);color:var(--foam);
+    width:46px;height:46px;border-radius:50%;font-size:1.3rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.15s}
+  .lb button:hover{background:var(--brass);color:var(--abyss);border-color:var(--brass)}
+  .lb .prev{left:18px;top:50%;transform:translateY(-50%)}
+  .lb .next{right:18px;top:50%;transform:translateY(-50%)}
+  .lb .close{top:18px;right:18px;width:40px;height:40px;font-size:1.1rem}
+  .lb .counter{position:absolute;top:26px;left:24px;color:var(--foam-dim);font-size:.82rem;letter-spacing:.05em}
+  @media(max-width:560px){.lb .prev{left:8px}.lb .next{right:8px}}
+</style>
 </head>
 <body>
   <header class="h">
     <div class="wrap">
       <a class="back" href="../hub-655b3b7228/">&larr; Hub</a>
-      <div class="eyebrow">Fish Log</div>
-      <h1 class="title">Fish Log</h1>
-      <div class="sub">The catch catalog — photos and notes by trip and species.</div>
+      <div class="eyebrow">Florida Critter Catalog</div>
+      <h1 class="title">In the canal &amp; on the bay</h1>
+      <p class="intro">Fish, sharks, rays, and the wildlife that turns up around the dock in Apollo Beach &mdash; landed, netted, or just passing through.</p>
     </div>
   </header>
+
   <main>
     <div class="wrap">
-      <div class="rows">
-        <div class="row">
-          <div class="meta">
-            <div class="nm">Coming soon</div>
-            <div class="dt">Drop content files in the <span class="mono">/fish/</span> folder and list them here.</div>
-          </div>
-        </div>
+      <div class="filters" id="filters" role="tablist">
+        <button class="on" data-cat="all">All <span class="count"></span></button>
+        <button data-cat="catch">The Catch <span class="count"></span></button>
+        <button data-cat="rays">Sharks &amp; Rays <span class="count"></span></button>
+        <button data-cat="wildlife">Wildlife <span class="count"></span></button>
       </div>
-      <p class="note">Placeholder page. Replace this with your Fish Log content whenever you're ready &mdash; the structure is already wired into the hub.</p>
+      <div class="grid" id="grid"></div>
+      <p class="note">Reference: <a href="https://myfwc.com/wildlifehabitats/profiles/" target="_blank" rel="noopener">Florida Fish &amp; Wildlife species profiles &rarr;</a></p>
     </div>
   </main>
-  <footer><div class="wrap">JCF &middot; private hub &middot; not indexed</div></footer>
+
+  <div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Photo viewer">
+    <span class="counter" id="lbCount"></span>
+    <button class="close" id="lbClose" aria-label="Close">&#10005;</button>
+    <button class="prev" id="lbPrev" aria-label="Previous">&#8249;</button>
+    <img id="lbImg" src="" alt="">
+    <button class="next" id="lbNext" aria-label="Next">&#8250;</button>
+    <div class="cap" id="lbCap"></div>
+  </div>
+
+  <footer><div class="wrap">JCF &middot; Florida Critter Catalog &middot; private hub</div></footer>
+
+<script>
+(function(){
+  "use strict";
+  // Grid loads img/thumb/<file>; lightbox loads the full-res img/<file>.
+  // cap ending in " ?" = my best-guess ID — correct freely.
+  var DATA=[
+    {f:"IMG_3546.JPG",cat:"catch",cap:"Common snook"},
+    {f:"007.JPG",cat:"catch",cap:"Red drum (redfish)"},
+    {f:"IMG_3539.JPG",cat:"catch",cap:"Sheepshead"},
+    {f:"IMG_3656-2.jpg",cat:"catch",cap:"Spanish mackerel"},
+    {f:"IMG_9145.JPEG",cat:"catch",cap:"Spanish mackerel ?"},
+    {f:"IMG_7731.JPEG",cat:"catch",cap:"Crevalle jack"},
+    {f:"IMG_3229.JPG",cat:"catch",cap:"Crevalle jack ?"},
+    {f:"IMG_3547.JPG",cat:"catch",cap:"Jack ?"},
+    {f:"IMG_3543.JPG",cat:"catch",cap:"Florida gar"},
+    {f:"IMG_7633.JPEG",cat:"catch",cap:"Florida gar"},
+    {f:"IMG_7632.JPEG",cat:"catch",cap:"Florida gar on the seawall"},
+    {f:"IMG_3230.JPG",cat:"catch",cap:"Mangrove snapper ?"},
+    {f:"002.JPG",cat:"catch",cap:"Hardhead catfish ?"},
+    {f:"IMG_3289.JPG",cat:"catch",cap:"Black drum ?"},
+    {f:"008.JPG",cat:"catch",cap:"Ladyfish ?"},
+    {f:"001.JPG",cat:"catch",cap:"A line in the canal"},
+    {f:"IMG_3231.JPG",cat:"catch",cap:"An afternoon on the dock"},
+    {f:"003.JPG",cat:"rays",cap:"Bonnethead shark"},
+    {f:"006.JPG",cat:"rays",cap:"Bonnethead shark"},
+    {f:"IMG_3313.JPG",cat:"rays",cap:"Atlantic stingray ?"},
+    {f:"SpottedEagleRay.jpg",cat:"rays",cap:"Spotted eagle ray"},
+    {f:"bluntnose-stingray.jpg",cat:"rays",cap:"Bluntnose stingray"},
+    {f:"cownoseray.jpg",cat:"rays",cap:"Cownose ray"},
+    {f:"GreenSeaTurtle.jpg",cat:"wildlife",cap:"Green sea turtle"},
+    {f:"dophin.jpg",cat:"wildlife",cap:"Bottlenose dolphin"},
+    {f:"manatee.jpg",cat:"wildlife",cap:"Manatee"}
+  ];
+  var LABELS={catch:"The Catch",rays:"Sharks & Rays",wildlife:"Wildlife"};
+  var THUMB="img/thumb/",FULL="img/";
+
+  var grid=document.getElementById("grid"),shown=[];
+  function counts(){
+    var c={all:DATA.length,catch:0,rays:0,wildlife:0};
+    DATA.forEach(function(d){c[d.cat]++;});
+    document.querySelectorAll("#filters button").forEach(function(b){b.querySelector(".count").textContent=c[b.dataset.cat];});
+  }
+  function render(cat){
+    grid.innerHTML="";
+    shown=DATA.filter(function(d){return cat==="all"||d.cat===cat;});
+    shown.forEach(function(d,i){
+      var cell=document.createElement("div");
+      cell.className="cell";cell.tabIndex=0;
+      cell.innerHTML='<span class="tag-badge">'+LABELS[d.cat]+'</span>'+
+        '<img loading="lazy" src="'+THUMB+encodeURIComponent(d.f)+'" alt="'+d.cap+'">'+
+        '<div class="cap">'+d.cap+'</div>';
+      cell.addEventListener("click",function(){openLb(i);});
+      cell.addEventListener("keydown",function(e){if(e.key==="Enter")openLb(i);});
+      grid.appendChild(cell);
+    });
+  }
+  document.querySelectorAll("#filters button").forEach(function(b){
+    b.addEventListener("click",function(){
+      document.querySelectorAll("#filters button").forEach(function(x){x.classList.remove("on");});
+      b.classList.add("on");render(b.dataset.cat);
+    });
+  });
+
+  var lb=document.getElementById("lb"),lbImg=document.getElementById("lbImg"),
+      lbCap=document.getElementById("lbCap"),lbCount=document.getElementById("lbCount"),idx=0;
+  function openLb(i){idx=i;showLb();lb.classList.add("open");document.body.style.overflow="hidden";}
+  function closeLb(){lb.classList.remove("open");document.body.style.overflow="";lbImg.src="";}
+  function showLb(){var d=shown[idx];lbImg.src=FULL+encodeURIComponent(d.f);lbImg.alt=d.cap;lbCap.textContent=d.cap.replace(/ \?$/," (best guess)");lbCount.textContent=(idx+1)+" / "+shown.length;}
+  function step(n){idx=(idx+n+shown.length)%shown.length;showLb();}
+  document.getElementById("lbClose").addEventListener("click",closeLb);
+  document.getElementById("lbPrev").addEventListener("click",function(){step(-1);});
+  document.getElementById("lbNext").addEventListener("click",function(){step(1);});
+  lb.addEventListener("click",function(e){if(e.target===lb)closeLb();});
+  document.addEventListener("keydown",function(e){
+    if(!lb.classList.contains("open"))return;
+    if(e.key==="Escape")closeLb();else if(e.key==="ArrowLeft")step(-1);else if(e.key==="ArrowRight")step(1);
+  });
+  counts();render("all");
+})();
+</script>
 </body>
 </html>
