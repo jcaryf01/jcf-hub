@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Your Gym Routine</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f0f2f5;
+    --surface: #ffffff;
+    --card: #ffffff;
+    --border: #d0d5e0;
+    --accent: #d4870a;
+    --accent2: #0a9e9e;
+    --text: #1a1f2e;
+    --muted: #5a6380;
+    --push: #c94020;
+    --pull: #1a7acc;
+    --legs: #2e8c2e;
+    --cardio: #0a9e9e;
+    --circuit: #9040c0;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    font-size: 25px;
+    min-height: 100vh;
+    padding-bottom: 80px;
+  }
+
+  .header {
+    background: linear-gradient(135deg, #ffffff 0%, #e8ecf4 100%);
+    border-bottom: 2px solid var(--accent);
+    padding: 18px 16px 14px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-top { display: flex; align-items: center; justify-content: space-between; }
+  .header h1 { font-family: 'Barlow Condensed', sans-serif; font-size: 32px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: var(--accent); }
+  .header p { font-size: 21px; color: var(--muted); margin-top: 2px; letter-spacing: 0.5px; }
+  .today-badge { background: var(--accent); color: #000; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 21px; padding: 4px 10px; border-radius: 20px; letter-spacing: 1px; text-transform: uppercase; }
+
+  .day-tabs { display: flex; gap: 6px; padding: 14px 16px 14px; overflow-x: auto; scrollbar-width: none; background: var(--bg); position: sticky; top: 72px; z-index: 99; border-bottom: 1px solid var(--border); }
+  .day-tabs::-webkit-scrollbar { display: none; }
+  .day-tab { flex-shrink: 0; background: var(--surface); border: 1.5px solid var(--border); border-radius: 10px; padding: 8px 14px; cursor: pointer; transition: all 0.2s; text-align: center; min-width: 58px; }
+  .day-tab .abbr { font-family: 'Barlow Condensed', sans-serif; font-size: 23px; font-weight: 700; letter-spacing: 1px; display: block; }
+  .day-tab .label { font-size: 15px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-top: 1px; }
+  .day-tab.active { border-color: currentColor; background: var(--card); }
+  .day-tab.push { color: var(--push); } .day-tab.pull { color: var(--pull); } .day-tab.legs { color: var(--legs); } .day-tab.cardio { color: var(--cardio); } .day-tab.circuit { color: var(--circuit); }
+
+  .content { padding: 16px; }
+  .day-panel { display: none; }
+  .day-panel.active { display: block; }
+
+  .day-hero { border-radius: 14px; padding: 16px 18px; margin-bottom: 16px; position: relative; overflow: hidden; }
+  .day-hero::before { content: ''; position: absolute; top: -30px; right: -30px; width: 120px; height: 120px; border-radius: 50%; opacity: 0.1; background: currentColor; }
+  .day-hero.push { background: linear-gradient(135deg, #fde8e2, #f0f2f5); color: var(--push); border: 1px solid #f0c0b0; }
+  .day-hero.pull { background: linear-gradient(135deg, #e2eefa, #f0f2f5); color: var(--pull); border: 1px solid #b0ccee; }
+  .day-hero.legs { background: linear-gradient(135deg, #e2f0e2, #f0f2f5); color: var(--legs); border: 1px solid #b0d8b0; }
+  .day-hero.cardio { background: linear-gradient(135deg, #e0f4f4, #f0f2f5); color: var(--cardio); border: 1px solid #a0d8d8; }
+  .day-hero.circuit { background: linear-gradient(135deg, #f0e4fa, #f0f2f5); color: var(--circuit); border: 1px solid #d0a8ee; }
+  .day-hero .day-name { font-family: 'Barlow Condensed', sans-serif; font-size: 40px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; color: currentColor; }
+  .day-hero .day-focus { font-size: 23px; color: var(--text); margin-top: 2px; font-weight: 500; }
+  .day-hero .day-meta { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
+  .meta-pill { background: rgba(0,0,0,0.06); border-radius: 20px; padding: 3px 10px; font-size: 17px; color: var(--muted); }
+
+  .section { margin-bottom: 16px; }
+  .section-title { font-family: 'Barlow Condensed', sans-serif; font-size: 23px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; padding-left: 2px; }
+
+  .exercise-list { display: flex; flex-direction: column; gap: 8px; }
+  .ex-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 13px 14px; display: flex; align-items: center; gap: 14px; cursor: pointer; transition: border-color 0.2s, background 0.2s; position: relative; }
+  .ex-card.done { opacity: 0.45; background: var(--surface); }
+  .ex-card.done .ex-name { text-decoration: line-through; }
+  .ex-num { font-family: 'Barlow Condensed', sans-serif; font-size: 25px; font-weight: 700; color: var(--muted); min-width: 22px; text-align: center; }
+  .ex-info { flex: 1; }
+  .ex-name { font-weight: 600; font-size: 24px; color: var(--text); line-height: 1.2; }
+  .ex-note { font-size: 23px; color: var(--muted); margin-top: 2px; }
+  .ex-badge { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 5px 10px; text-align: center; flex-shrink: 0; }
+  .ex-badge .sets { font-family: 'Barlow Condensed', sans-serif; font-size: 25px; font-weight: 700; line-height: 1; color: var(--accent); }
+  .ex-badge .reps { font-size: 16px; color: var(--muted); }
+  .check-icon { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); font-size: 21px; display: none; }
+  .ex-card.done .check-icon { display: block; }
+  .ex-card.done .ex-badge { display: none; }
+
+  .stretch-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: opacity 0.2s; }
+  .stretch-card.done { opacity: 0.4; }
+  .stretch-card.done .stretch-name { text-decoration: line-through; }
+  .stretch-icon { font-size: 24px; min-width: 28px; text-align: center; }
+  .stretch-info { flex: 1; }
+  .stretch-name { font-size: 23px; font-weight: 500; }
+  .stretch-detail { font-size: 23px; color: var(--muted); margin-top: 1px; }
+  .stretch-check { font-size: 23px; margin-left: auto; display: none; }
+  .stretch-card.done .stretch-check { display: block; }
+
+  .circuit-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 13px 14px; display: flex; align-items: center; gap: 14px; cursor: pointer; }
+  .circuit-card.done { opacity: 0.4; }
+  .circuit-card.done .ex-name { text-decoration: line-through; }
+  .circuit-step { width: 36px; height: 36px; border-radius: 50%; background: var(--circuit); color: #fff; font-family: 'Barlow Condensed', sans-serif; font-size: 21px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+  .warmup-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 13px 16px; display: flex; align-items: center; gap: 12px; }
+  .warmup-icon { font-size: 26px; }
+  .warmup-text { font-size: 25px; }
+  .warmup-text strong { display: block; font-weight: 600; }
+  .warmup-text span { color: var(--muted); font-size: 23px; }
+
+  .progress-wrap { background: var(--surface); border-radius: 14px; padding: 12px 14px; margin-bottom: 16px; border: 1px solid var(--border); }
+  .progress-top { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 21px; color: var(--muted); }
+  .progress-bar-bg { background: var(--border); border-radius: 10px; height: 8px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; border-radius: 10px; background: linear-gradient(90deg, var(--accent), var(--accent2)); transition: width 0.4s ease; }
+
+  .reset-btn { background: var(--surface); border: 1px solid var(--border); color: var(--muted); padding: 10px 20px; border-radius: 20px; font-family: 'Barlow', sans-serif; font-size: 21px; cursor: pointer; display: block; margin: 0 auto 20px; letter-spacing: 0.5px; }
+  .reset-btn:active { background: var(--card); }
+
+  .weight-row { display: flex; align-items: center; gap: 10px; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border); }
+  .weight-label { font-family: 'Barlow Condensed', sans-serif; font-size: 19px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); }
+  .weight-input { background: var(--bg); border: 1.5px solid var(--border); color: var(--accent); font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 26px; padding: 8px 12px; border-radius: 10px; width: 100px; text-align: center; -moz-appearance: textfield; }
+  .weight-input::-webkit-outer-spin-button, .weight-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  .weight-input:focus { outline: none; border-color: var(--accent); background: #fff; }
+  .weight-unit { font-family: 'Barlow Condensed', sans-serif; font-size: 21px; font-weight: 600; color: var(--muted); letter-spacing: 0.5px; }
+  .weight-saved { margin-left: auto; font-size: 17px; color: var(--legs); opacity: 0; transition: opacity 0.3s; font-weight: 600; letter-spacing: 0.5px; }
+  .weight-saved.show { opacity: 1; }
+  .ex-card.has-weight, .circuit-card.has-weight { flex-wrap: wrap; }
+  .ex-card.has-weight > .ex-num, .ex-card.has-weight > .ex-info, .ex-card.has-weight > .ex-badge, .ex-card.has-weight > .check-icon { /* keep top row alignment */ }
+  .ex-card.has-weight .weight-row, .circuit-card.has-weight .weight-row { flex-basis: 100%; }
+  .ex-card.done .weight-row, .circuit-card.done .weight-row { opacity: 0.6; }
+
+  .tip-box { background: var(--card); border-left: 3px solid var(--accent); border-radius: 0 10px 10px 0; padding: 12px 14px; font-size: 19px; color: var(--muted); line-height: 1.5; margin-top: 8px; }
+  .tip-box strong { color: var(--accent); display: block; margin-bottom: 3px; font-size: 17px; letter-spacing: 1px; text-transform: uppercase; }
+  .divider { height: 1px; background: var(--border); margin: 14px 0; }
+
+  .timer-overlay { position: fixed; bottom: 0; left: 0; right: 0; z-index: 200; transform: translateY(100%); transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1); }
+  .timer-overlay.visible { transform: translateY(0); }
+  .timer-sheet { background: #ffffff; border-top: 2px solid var(--accent); border-radius: 22px 22px 0 0; padding: 20px 24px 36px; box-shadow: 0 -10px 40px rgba(0,0,0,0.15); }
+  .timer-handle { width: 40px; height: 4px; background: var(--border); border-radius: 2px; margin: 0 auto 16px; }
+  .timer-label { font-family: 'Barlow Condensed', sans-serif; font-size: 23px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); text-align: center; margin-bottom: 6px; }
+  .timer-ring-wrap { display: flex; justify-content: center; margin: 8px 0 16px; }
+  .timer-ring { width: 160px; height: 160px; transform: rotate(-90deg); }
+  .timer-ring-bg { fill: none; stroke: var(--border); stroke-width: 8; }
+  .timer-ring-fill { fill: none; stroke: var(--accent); stroke-width: 8; stroke-linecap: round; stroke-dasharray: 440; stroke-dashoffset: 0; transition: stroke-dashoffset 1s linear, stroke 0.3s; }
+  .timer-ring-fill.urgent { stroke: #c94020; }
+  .timer-ring-container { position: relative; width: 160px; height: 160px; }
+  .timer-inner { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
+  .timer-count { font-family: 'Barlow Condensed', sans-serif; font-size: 52px; font-weight: 800; color: var(--accent); line-height: 1; transition: color 0.3s; }
+  .timer-count.urgent { color: #c94020; }
+  .timer-sublabel { font-size: 17px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+  .timer-buttons { display: flex; gap: 10px; margin-top: 4px; }
+  .timer-btn { flex: 1; padding: 13px; border-radius: 14px; border: none; font-family: 'Barlow Condensed', sans-serif; font-size: 23px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; transition: opacity 0.15s, transform 0.1s; }
+  .timer-btn:active { transform: scale(0.97); opacity: 0.85; }
+  .timer-btn.primary { background: var(--accent); color: #fff; }
+  .timer-btn.secondary { background: var(--surface); color: var(--muted); border: 1px solid var(--border); }
+  .timer-btn.add { background: var(--surface); color: var(--accent2); border: 1px solid var(--border); flex: 0 0 auto; padding: 13px 16px; }
+  .timer-exercise-name { font-size: 19px; color: var(--text); text-align: center; margin-bottom: 2px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div>
+      <h1>💪 My Gym Routine</h1>
+      <p>5-Day Program · ~45 min · M–F</p>
+    </div>
+    <div class="today-badge" id="todayBadge">Today</div>
+  </div>
+</div>
+
+<div class="day-tabs">
+  <div class="day-tab push" onclick="switchDay(0)"><span class="abbr">MON</span><span class="label">Push</span></div>
+  <div class="day-tab cardio" onclick="switchDay(1)"><span class="abbr">TUE</span><span class="label">Cardio</span></div>
+  <div class="day-tab legs" onclick="switchDay(2)"><span class="abbr">WED</span><span class="label">Legs</span></div>
+  <div class="day-tab pull" onclick="switchDay(3)"><span class="abbr">THU</span><span class="label">Pull</span></div>
+  <div class="day-tab circuit" onclick="switchDay(4)"><span class="abbr">FRI</span><span class="label">Circuit</span></div>
+</div>
+
+<div class="content">
+
+  <!-- MONDAY -->
+  <div class="day-panel push active" id="panel-0">
+    <div class="day-hero push"><div class="day-name">Monday</div><div class="day-focus">Upper Body Push + Cardio</div><div class="day-meta"><span class="meta-pill">⏱ ~45 min</span><span class="meta-pill">🏋️ Strength focus</span></div></div>
+    <div class="progress-wrap"><div class="progress-top"><span>Progress</span><span id="prog-0">0 / 8 done</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" id="bar-0" style="width:0%"></div></div></div>
+    <div class="section"><div class="section-title">🔥 Warm-up · 5 min</div><div class="warmup-card"><div class="warmup-icon">🚶</div><div class="warmup-text"><strong>Treadmill</strong><span>Brisk walk · 2–3% incline · 5 min</span></div></div></div>
+    <div class="section"><div class="section-title">💪 Strength · 25 min</div><div class="exercise-list" id="ex-0">
+      <div class="ex-card has-weight" onclick="toggleEx(this,'0')"><div class="ex-num">1</div><div class="ex-info"><div class="ex-name">Incline Bench Press</div><div class="ex-note">Controlled descent, full press</div></div><div class="ex-badge"><div class="sets">3×10</div><div class="reps">reps</div></div><div class="check-icon">✅</div><div class="weight-row" data-key="mon-incline-bench"><span class="weight-label">Weight</span><input type="number" class="weight-input" inputmode="decimal" placeholder="—"><span class="weight-unit">lbs</span><span class="weight-saved">✓ saved</span></div></div>
+      <div class="ex-card has-weight" onclick="toggleEx(this,'0')"><div class="ex-num">2</div><div class="ex-info"><div class="ex-name">Fly / Pec Station</div><div class="ex-note">Squeeze at center, don't lock elbows</div></div><div class="ex-badge"><div class="sets">3×12</div><div class="reps">reps</div></div><div class="check-icon">✅</div><div class="weight-row" data-key="mon-pec-fly"><span class="weight-label">Weight</span><input type="number" class="weight-input" inputmode="decimal" placeholder="—"><span class="weight-unit">lbs</span><span class="weight-saved">✓ saved</span></div></div>
+      <div class="ex-card has-weight" onclick="toggleEx(this,'0')"><div class="ex-num">3</div><div class="ex-info"><div class="ex-name">Dumbbell Shoulder Press</div><div class="ex-note">Seated or standing</div></div><div class="ex-badge"><div class="sets">3×10</div><div class="reps">reps</div></div><div class="check-icon">✅</div><div class="weight-row" data-key="mon-db-shoulder"><span class="weight-label">Each DB</span><input type="number" class="weight-input" inputmode="decimal" placeholder="—"><span class="weight-unit">lbs</span><span class="weight-saved">✓ saved</span></div></div>
+      <div class="ex-card has-weight" onclick="toggleEx(this,'0')"><div class="ex-num">4</div><div class="ex-info"><div class="ex-name">Curl Machine</div><div class="ex-note">Full range of motion</div></div><div class="ex-badge"><div class="sets">2×12</div><div class="reps">reps</div></div><div class="check-icon">✅</div><div class="weight-row" data-key="mon-curl"><span class="weight-label">Weight</span><input type="number" class="weight-input" inputmode="decimal" placeholder="—"><span class="weight-unit">lbs</span><span class="weight-saved">✓ saved</span></div></div>
+    </div></div>
+    <div class="section"><div class="section-title">🧘 Flexibility · 10 min</div><div class="exercise-list" id="flex-0">
+      <div class="stretch-card" onclick="toggleStretch(this,'0')"><div class="stretch-icon">🤸</div><div class="stretch-info"><div class="stretch-name">Chest Doorway Stretch</div><div class="stretch-detail">3 × 30 sec</div></div><div class="stretch-check">✅</div></div>
+      <div class="stretch-card" onclick="toggleStretch(this,'0')"><div class="stretch-icon">🦾</div><div class="stretch-info"><div class="stretch-name">Shoulder Cross-Body Stretch</div><div class="stretch-detail">3 × 30 sec each arm</div></div><div class="stretch-check">✅</div></div>
+      <div class="stretch-card" onclick="toggleStretch(this,'0')"><div class="stretch-icon">🔄</div><div class="stretch-info"><div class="stretch-name">Seated Thoracic Rotation</div><div class="stretch-detail">10 reps per side · on mat</div></div><div class="stretch-check">✅</div></div>
+      <div class="stretch-card" onclick="toggleStretch(this,'0')"><div class="stretch-icon">🌬️</div><div class="stretch-info"><div class="stretch-name">Deep Breathing</div><div class="stretch-detail">2 min · slow, intentional breaths on mat</div></div><div class="stretch-check">✅</div></div>
+    </div></div>
+    <button class="reset-btn" onclick="resetDay('0')">↺ Reset Monday</button>
+  </div>
+
+  <!-- TUESDAY -->
+  <div class="day-panel cardio" id="panel-1">
+    <div class="day-hero cardio"><div class="day-name">Tuesday</div><div class="day-focus">Cardio Focus + Core & Balance</div><div class="day-meta"><span class="meta-pill">⏱ ~45 min</span><span class="meta-pill">🚣 Recovery day</span></div></div>
+    <div class="progress-wrap"><div class="progress-top"><span>Progress</span><span id="prog-1">0 / 8 done</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" id="bar-1" style="width:0%"></div></div></div>
+    <div class="section"><div class="section-title">🚣 Cardio · 25 min</div><div class="warmup-card"><div class="warmup-icon">🚣</div><div class="warmup-text"><strong>Rowing Machine</strong><span>Alternate 5 min easy / 5 min moderate push × 5 rounds</span></div></div></div>
+    <div class="section"><div class="section-title">⚖️ Core & Balance · 10 min</div><div class="exercise-list" id="ex-1">
+      <div class="ex-card has-weight" onclick="toggleEx(this,'1')"><div class="ex-num">1</div><div class="ex-info"><div class="ex-name">Dumbbell Farmer's Carry</div><div class="ex-note">Walk across the gym floor · stand tall</div></div><div class="ex-badge"><div class="sets">3</div><div class="reps">passes</div></div><div class="check-icon">✅</div><div class="weight-row" data-key="tue-farmers"><span class="weight-label">Each DB</span><input type="number" class="weight-input" inputmode="decimal" placeholder="—"><span class="weight-unit">lbs</span><span class="weight-saved">✓ saved</span></div></div>
+      <div class="ex-card" onclick="toggleEx(this,'1')"><div class="ex-num">2</div><div class="ex-info"><div class="ex-name">Single-Leg Balance Stand</div><div class="ex-note">Near a wall if needed at first</div></div><div class="ex-badge"><div class="sets">3×20s</div><div class="reps">each leg</div></div><div class="check-icon">✅</div></div>
+      <div class="ex-card" onclick="toggleEx(this,'1')"><div class="ex-num">3</div><div class="ex-info"><div class="ex-name">Dead Bug</div><div class="ex-note">Slow, controlled · press low back to mat</div></div><div class="ex-badge"><div class="sets">3×8</div><div class="reps">per side</div></div><div class="check-icon">✅</div></div>
+      <div class="ex-card" onclick="toggleEx(this,'1')"><div class="ex-num">4</div><div class="ex-info"><div class="ex-name">Hip Flexor Kneeling Stretch</div><div class="ex-note">Lunge position, back knee on mat</div></div><div class="ex-badge"><div class="sets">2×30s</div><div class="reps">each side</div></div><div class="check-icon">✅</div></div>
+    </div></div>
+    <div class="section"><div class="section-title">🧘 Flexibility · 10 min</div><div class="exercise-list" id="flex-1">
+      <div class="stretch-card" onclick="toggleStretch(this,'1')"><div class="stretch-icon">🦵</div><div class="stretch-info"><div class="stretch-name">Hamstring Mat Stretch</div><div class="stretch-detail">3 × 30 sec</div></div><div class="stretch-check">✅</div></div>
+      <div class="stretch-card" onclick="toggleStretch(this,'1')"><div class="stretch-icon">🍑</div><div class="stretch-info"><div class="stretch-name">Piriformis Figure-4 Stretch</div><div class="stretch-detail">3 × 30 sec each side</div></div><div class="stretch-check">✅</div></div>
+      <div class="stretch-card" onclick="toggleStretch(this,'1')"><div class="stretch-icon">🐱</div><div class="stretch-info"><div class="stretch-name">Cat / Cow</div><div class="stretch-detail">10 slow reps · breathe through each</div></div><div class="stretch-check">✅</div></div>
+      <div class="stretch-card" onclick="toggleStretch(this,'1')"><div class="stretch-icon">🌬️</div><div class="stretch-info"><div class="stretch-name">Deep Breathing</div><div class="stretch-detail">2 min · on mat</div></div><div class="stretch-check">✅</div></div>
+    </div></div>
+    <button class="reset-btn" onclick="resetDay('1')">↺ Reset Tuesday</button>
+  </div>
+
+  <!-- WEDNESDAY -->
+  <div class="day-panel legs" id="panel-2">
+    <div class="day-hero legs"><div class="day-name">Wednesday</div><div class="day-focus">Lower Body</div><div class="day-meta"><span class="meta-pill">⏱ ~45 min</span><span class="meta-pill">🦵 Legs focus</span></div></div>
+    <div class="progress-wrap"><div class="progress-top"><span>Progress</span><span id="prog-2">0 / 8 done</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" id="bar-2" style="width:0%"></div></div></div>
+    <div class="section"><div class="section-title">🔥 Warm-up · 5 min</div><div class="warmup-card"><div class="warmup-icon">🚶</div><div class="warmup-text"><strong>Treadmill</strong><span>Easy pace · flat or light incline · 5 min</span></div></div></div>
+    <div class="section"><div class="section-title">🦵 Strength · 25 min</div><div class="exercise-list" id="ex-2">
+      <div class="ex-card has-weight" onclick="toggleEx(this,'2')"><div class="ex-num">1</div><div class="ex-info"><div class="ex-name">Leg Press</div><div class="ex-note">Feet shoulder-width · full range</div></div><div class="ex-badge"><div class="sets">3×12</div><div class="reps">reps</div></div><div class="check-icon">✅</div><div class="weight-row" data-key="wed-leg-press"><span class="weight-label">Weight</span><input type="number" class="weight-input" inputmode="decimal" placeholder="—"><span class="weight-unit">lbs</span><span class="weight-saved">✓ saved</span></div></div>
+      <div class="ex-card has-weight" onclick="toggleEx(this,'2')"><div class="ex-num">2</div><div class="ex-info"><div class="ex-name">Quad Extension</div><div class="ex-note">Leg lift machine · slow return</div></div><div class="ex-badge"><div class="sets">3×12</div><div class="reps">reps</div></div><div class="check-icon">✅</div><div class="weight-row" data-key="wed-quad-ext"><span class="weight-label">Weight</span><input type="number" class="weight-input" inputmode="decimal" placeholder="—"><span class="weight-unit">lbs</span><span class="weight-saved">✓ saved</span></div></div>
+      <div class="ex-card has-weight" onclick="toggleEx(this,'2')"><div class="ex-num">3</div><div class="ex-info"><div class="ex-name">Leg Curl / Hamstring</div><div class="ex-note">Controlled · don't rush the curl</div></div><div class="ex-badge"><div class="sets">3×12</div><div class="reps">reps</div></div><div class="check-icon">✅</div><div class="weight-row" data-key="wed-leg-curl"><span class="weight-label">Weight</span><input type="number" class="weight-input" inputmode="decimal" placeholder="—"><span class="weight-unit">lbs</span><span class="weight-saved">✓ saved</span></div></div>
+      <div class="ex-card has-weight" onclick="toggleEx(this,'2')"><div class="ex-num">4</div><div class="ex-info"><div class="ex-name">Squat Rack</div><div class="ex-note">Goblet squat or back squat · your call</div></div><div class="ex-badge"><div class="sets">3×10</div><div class="reps">reps</div></div><div class="check-icon">✅</div><div class="weight-row" data-key="wed-squat"><span class="weight-label">Weight</span><input type="number" class="weight-input" inputmode="decimal" placeholder="—"><span class="weight-unit">lbs</span><span class="weight-saved">✓ saved</span></div></div>
+    </div></div>
+    <div class="section"><div class="section-title">🧘 Flexibility · 10 min</div><div class="exercise-list" id="flex-2">
+      <div class="stretch-card" onclick="toggleStretch(this,'2')"><div class="stretch-icon">🦵</div><div class="stretch-info"><div class="stretch-name">Standing Quad Stretch</div><div class="stretch-detail">3 × 30 sec each leg</div></div><div class="stretch-check">✅</div></div>
+      <div class="stretch-card" onclick="toggleStretch(this,'2')"><div class="stretch-icon">🪑</div><div class="stretch-info"><div class="stretch-name">Seated Hamstring Stretch</div><div class="stretch-detail">3 × 30 sec</div></div><div class="stretch-check">✅</div></div>
+      <div class="stretch-card" onclick="toggleStretch(this,'2')"><div class="stretch-icon">🧱</div><div class="stretch-info"><div class="stretch-name">Calf Stretch (wall)</div><div class="stretch-detail">2 × 30 sec each leg</div></div><div class="stretch-check">✅</div></div>
+      <div class="stretch-card" onclick="toggleStretch(this,'2')"><div class="stretch-icon">🏃</div><div class="stretch-info"><div class="stretch-name">Hip Flexor Lunge Stretch</div><div class="stretch-detail">2 × 30 sec each side</div></div><div class="stretch-check">✅</div></div>
+    </div></div>
+    <button class="reset-btn" onclick="resetDay('2')">↺ Reset Wednesday</button>
+  </div>
+
+  <!-- THURSDAY -->
+  <div class="day-panel pull" id="panel-3">
+    <div class="day-hero pull"><div class="day-name">Thursday</div><div class="day-focus">Upper Body Pull + Cardio</div><div class="day-meta"><span class="meta-pill">⏱ ~45 min</span><span class="meta-pill">🏋️ Strength focus</span></div></div>
+    <div class="progress-wrap"><div class="progress-top"><span>Progress</span><span id="prog-3">0 / 8 done</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" id="bar-3" style="width:0%"></div></div></div>
+    <div class="section"><div class="section-title">🔥 Warm-up · 5 min</div><div class="warmup-card"><div class="warmup-icon">⛰️</div><div class="warmup-text"><strong>Treadmill — Incline</strong><span>Slower pace · 5–6% incline · 5 min</span></div></div></div>
+    <div class="section"><div class="section-title">💪 Strength · 25 min</div><div class="exercise-list" id="ex-3">
+      <div class="ex-card has-weight" onclick="toggleEx(this,'3')"><div class="ex-num">1</div><div class="ex-info"><div class="ex-name">Assisted Pull-up Machine</div><div class="ex-note">Full hang to chin over bar · less assist = harder</div></div><div class="ex-badge"><div class="sets">3×8</div><div class="reps">reps</div></div><div class="check-icon">✅</div><div class="weight-row" data-key="thu-assist-pullup"><span class="weight-label">Assist</span><input type="number" class="weight-input" inputmode="decimal" placeholder="—"><span class="weight-unit">lbs</span><span class="weight-saved">✓ saved</span></div></div>
+      <div class="ex-card has-weight" onclick="toggleEx(this,'3')"><div class="ex-num">2</div><div class="ex-info"><div class="ex-name">Lat Pulldown</div><div class="ex-note">Pull to upper chest · lean back slightly</div></div><div class="ex-badge"><div class="sets">3×12</div><div class="reps">reps</div></div><div class="check-icon">✅</div><div class="weight-row" data-key="thu-lat-pulldown"><span class="weight-label">Weight</span><input type="number" class="weight-input" inputmode="decimal" placeholder="—"><span class="weight-unit">lbs</span><span class="weight-saved">✓ saved</span></div></div>
+      <div class="ex-card has-weight" onclick="toggleEx(this,'3')"><div class="ex-num">3</div><div class="ex-info"><div class="ex-name">Seated Cable Row</div><div class="ex-note">Squeeze shoulder blades at end</div></div><div class="ex-badge"><div class="sets">3×12</div><div class="reps">reps</div></div><div class="check-icon">✅</div><div class="weight-row" data-key="thu-seated-row"><span class="weight-label">Weight</span><input type="number" class="weight-input" inputmode="decimal" placeholder="—"><span class="weight-unit">lbs</span><span class="weight-saved">✓ saved</span></div></div>
+      <div class="ex-card has-weight" onclick="toggleEx(this,'3')"><div class="ex-num">4</div><div class="ex-info"><div class="ex-name">Dumbbell Rear Delt Fly</div><div class="ex-note">Hinge forward · elbows slightly bent</div></div><div class="ex-badge"><div class="sets">2×12</div><div class="reps">reps</div></div><div class="check-icon">✅</div><div class="weight-row" data-key="thu-rear-delt"><span class="weight-label">Each DB</span><input type="number" class="weight-input" inputmode="decimal" placeholder="—"><span class="weight-unit">lbs</span><span class="weight-saved">✓ saved</span></div></div>
+    </div></div>
+    <div class="section"><div class="section-title">🧘 Flexibility · 10 min</div><div class="exercise-list" id="flex-3">
+      <div class="stretch-card" onclick="toggleStretch(this,'3')"><div class="stretch-icon">🙋</div><div class="stretch-info"><div class="stretch-name">Lat Stretch (arm overhead, wall)</div><div class="stretch-detail">3 × 30 sec each side</div></div><div class="stretch-check">✅</div></div>
+      <div class="stretch-card" onclick="toggleStretch(this,'3')"><div class="stretch-icon">🔓</div><div class="stretch-info"><div class="stretch-name">Chest-Up Thoracic Opener</div><div class="stretch-detail">10 reps · on mat</div></div><div class="stretch-check">✅</div></div>
+      <div class="stretch-card" onclick="toggleStretch(this,'3')"><div class="stretch-icon">↔️</div><div class="stretch-info"><div class="stretch-name">Neck Side Stretch</div><div class="stretch-detail">2 × 20 sec each side · gentle</div></div><div class="stretch-check">✅</div></div>
+      <div class="stretch-card" onclick="toggleStretch(this,'3')"><div class="stretch-icon">🤲</div><div class="stretch-info"><div class="stretch-name">Wrist & Forearm Stretches</div><div class="stretch-detail">1 min total · both directions</div></div><div class="stretch-check">✅</div></div>
+    </div></div>
+    <button class="reset-btn" onclick="resetDay('3')">↺ Reset Thursday</button>
+  </div>
+
+  <!-- FRIDAY -->
+  <div class="day-panel circuit" id="panel-4">
+    <div class="day-hero circuit"><div class="day-name">Friday</div><div class="day-focus">Full Body Circuit — The Fun Day</div><div class="day-meta"><span class="meta-pill">⏱ ~45 min</span><span class="meta-pill">🔥 3 rounds</span></div></div>
+    <div class="progress-wrap"><div class="progress-top"><span>Progress</span><span id="prog-4">0 / 10 done</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" id="bar-4" style="width:0%"></div></div></div>
+    <div class="tip-box"><strong>⚡ How it works</strong>Complete all 6 exercises back-to-back = 1 round. Rest 60 seconds. Repeat 3 times total. Keep moving — this is what makes Friday fun.</div>
+    <div class="divider"></div>
+    <div class="section"><div class="section-title">🔄 Circuit · 3 Rounds</div><div class="exercise-list" id="ex-4">
+      <div class="circuit-card" onclick="toggleEx(this,'4')"><div class="circuit-step">1</div><div class="ex-info"><div class="ex-name">Rowing Machine</div><div class="ex-note">3 min · moderate pace</div></div><div class="check-icon" style="display:none">✅</div></div>
+      <div class="circuit-card has-weight" onclick="toggleEx(this,'4')"><div class="circuit-step">2</div><div class="ex-info"><div class="ex-name">Dumbbell Goblet Squat</div><div class="ex-note">12 reps · chest up, heels down</div></div><div class="check-icon" style="display:none">✅</div><div class="weight-row" data-key="fri-goblet"><span class="weight-label">DB</span><input type="number" class="weight-input" inputmode="decimal" placeholder="—"><span class="weight-unit">lbs</span><span class="weight-saved">✓ saved</span></div></div>
+      <div class="circuit-card has-weight" onclick="toggleEx(this,'4')"><div class="circuit-step">3</div><div class="ex-info"><div class="ex-name">Dumbbell Bent-Over Row</div><div class="ex-note">12 reps each side</div></div><div class="check-icon" style="display:none">✅</div><div class="weight-row" data-key="fri-bent-row"><span class="weight-label">Each DB</span><input type="number" class="weight-input" inputmode="decimal" placeholder="—"><span class="weight-unit">lbs</span><span class="weight-saved">✓ saved</span></div></div>
+      <div class="circuit-card has-weight" onclick="toggleEx(this,'4')"><div class="circuit-step">4</div><div class="ex-info"><div class="ex-name">Dumbbell Walking Lunges</div><div class="ex-note">10 steps each leg</div></div><div class="check-icon" style="display:none">✅</div><div class="weight-row" data-key="fri-lunges"><span class="weight-label">Each DB</span><input type="number" class="weight-input" inputmode="decimal" placeholder="—"><span class="weight-unit">lbs</span><span class="weight-saved">✓ saved</span></div></div>
+      <div class="circuit-card has-weight" onclick="toggleEx(this,'4')"><div class="circuit-step">5</div><div class="ex-info"><div class="ex-name">Assisted Pull-up</div><div class="ex-note">8 reps · full range · less assist = harder</div></div><div class="check-icon" style="display:none">✅</div><div class="weight-row" data-key="fri-assist-pullup"><span class="weight-label">Assist</span><input type="number" class="weight-input" inputmode="decimal" placeholder="—"><span class="weight-unit">lbs</span><span class="weight-saved">✓ saved</span></div></div>
+      <div class="circuit-card" onclick="toggleEx(this,'4')"><div class="circuit-step">6</div><div class="ex-info"><div class="ex-name">Incline Treadmill Walk</div><div class="ex-note">3 min · active recovery between rounds</div></div><div class="check-icon" style="display:none">✅</div></div>
+    </div></div>
+    <div class="section"><div class="section-title">🧘 Wind-Down · 10 min</div><div class="exercise-list" id="flex-4">
+      <div class="stretch-card" onclick="toggleStretch(this,'4')"><div class="stretch-icon">✨</div><div class="stretch-info"><div class="stretch-name">Full Body Stretch — Your Choice</div><div class="stretch-detail">Pick whatever feels tight from the week</div></div><div class="stretch-check">✅</div></div>
+      <div class="stretch-card" onclick="toggleStretch(this,'4')"><div class="stretch-icon">🌬️</div><div class="stretch-info"><div class="stretch-name">Deep Breathing on Mat</div><div class="stretch-detail">2 min · you earned it</div></div><div class="stretch-check">✅</div></div>
+      <div class="stretch-card" onclick="toggleStretch(this,'4')"><div class="stretch-icon">🏆</div><div class="stretch-info"><div class="stretch-name">Reflect on the week</div><div class="stretch-detail">What felt good? What to push next week?</div></div><div class="stretch-check">✅</div></div>
+    </div></div>
+    <div class="tip-box" style="margin-top:12px"><strong>📝 Coach's note</strong>Scale Friday's intensity to how the week felt. Some weeks you push hard, some you cruise. Both are wins.</div>
+    <button class="reset-btn" onclick="resetDay('4')">↺ Reset Friday</button>
+  </div>
+
+</div>
+
+<!-- REST TIMER -->
+<div class="timer-overlay" id="timerOverlay">
+  <div class="timer-sheet">
+    <div class="timer-handle"></div>
+    <div class="timer-label">Rest Timer</div>
+    <div class="timer-exercise-name" id="timerExName">–</div>
+    <div class="timer-ring-wrap">
+      <div class="timer-ring-container">
+        <svg class="timer-ring" viewBox="0 0 160 160">
+          <circle class="timer-ring-bg" cx="80" cy="80" r="70"/>
+          <circle class="timer-ring-fill" id="timerRingFill" cx="80" cy="80" r="70"/>
+        </svg>
+        <div class="timer-inner">
+          <div class="timer-count" id="timerCount">1:00</div>
+          <div class="timer-sublabel">seconds left</div>
+        </div>
+      </div>
+    </div>
+    <div class="timer-buttons">
+      <button class="timer-btn secondary" onclick="dismissTimer()">Skip</button>
+      <button class="timer-btn primary" id="timerPauseBtn" onclick="togglePause()">Pause</button>
+      <button class="timer-btn add" onclick="addTime(30)">+30s</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const TOTAL = ['8','8','8','8','10'];
+  const REST_DURATION = 60;
+  let timerInterval = null, timerRemaining = REST_DURATION, timerTotal = REST_DURATION, timerPaused = false;
+  const CIRCUMFERENCE = 2 * Math.PI * 70;
+
+  // ===== WEIGHT PERSISTENCE =====
+  // Saved weights survive Reset, browser close, everything.
+  const WEIGHT_KEY = 'gym-routine-weights-v1';
+  function loadWeights() { try { const raw = localStorage.getItem(WEIGHT_KEY); return raw ? JSON.parse(raw) : {}; } catch(e) { return {}; } }
+  function saveWeights(w) { try { localStorage.setItem(WEIGHT_KEY, JSON.stringify(w)); } catch(e) {} }
+  function initWeightInputs() {
+    const weights = loadWeights();
+    document.querySelectorAll('.weight-row').forEach(row => {
+      const key = row.dataset.key;
+      const input = row.querySelector('.weight-input');
+      const saved = row.querySelector('.weight-saved');
+      if (!key || !input) return;
+      if (weights[key] !== undefined && weights[key] !== '') input.value = weights[key];
+      // Only stop propagation on the input itself, so tapping it doesn't toggle
+      // the card. Tapping elsewhere on the card (including blank space in the
+      // weight row) should still check the exercise off and start the timer.
+      ['click','mousedown','touchstart','touchend','pointerdown'].forEach(ev => {
+        input.addEventListener(ev, e => e.stopPropagation());
+      });
+      let t;
+      input.addEventListener('input', () => {
+        const all = loadWeights();
+        all[key] = input.value;
+        saveWeights(all);
+        clearTimeout(t);
+        saved.classList.add('show');
+        t = setTimeout(() => saved.classList.remove('show'), 1500);
+      });
+    });
+  }
+
+  function updateProgress(day) {
+    const exCards = document.querySelectorAll('#ex-'+day+' .ex-card, #ex-'+day+' .circuit-card');
+    const strCards = document.querySelectorAll('#flex-'+day+' .stretch-card');
+    let done = 0;
+    exCards.forEach(c => { if(c.classList.contains('done')) done++; });
+    strCards.forEach(c => { if(c.classList.contains('done')) done++; });
+    const pct = Math.round((done/parseInt(TOTAL[day]))*100);
+    document.getElementById('bar-'+day).style.width = pct+'%';
+    document.getElementById('prog-'+day).textContent = done+' / '+TOTAL[day]+' done';
+  }
+
+  function startTimer(name) {
+    clearInterval(timerInterval);
+    timerRemaining = timerTotal = REST_DURATION;
+    timerPaused = false;
+    document.getElementById('timerExName').textContent = 'After: ' + name;
+    document.getElementById('timerPauseBtn').textContent = 'Pause';
+    document.getElementById('timerOverlay').classList.add('visible');
+    renderTimer();
+    timerInterval = setInterval(tickTimer, 1000);
+  }
+
+  function tickTimer() {
+    if (timerPaused) return;
+    timerRemaining--;
+    renderTimer();
+    if (timerRemaining <= 0) {
+      clearInterval(timerInterval);
+      if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+      setTimeout(dismissTimer, 800);
+    }
+  }
+
+  function renderTimer() {
+    const m = Math.floor(timerRemaining/60), s = timerRemaining%60;
+    const countEl = document.getElementById('timerCount');
+    const ringEl = document.getElementById('timerRingFill');
+    countEl.textContent = m+':'+String(s).padStart(2,'0');
+    ringEl.style.strokeDasharray = CIRCUMFERENCE;
+    ringEl.style.strokeDashoffset = CIRCUMFERENCE*(1-timerRemaining/timerTotal);
+    const urgent = timerRemaining <= 10;
+    countEl.classList.toggle('urgent', urgent);
+    ringEl.classList.toggle('urgent', urgent);
+  }
+
+  function togglePause() {
+    timerPaused = !timerPaused;
+    document.getElementById('timerPauseBtn').textContent = timerPaused ? 'Resume' : 'Pause';
+  }
+
+  function addTime(s) {
+    timerRemaining = Math.min(timerRemaining+s, 300);
+    timerTotal = Math.max(timerTotal, timerRemaining);
+    renderTimer();
+  }
+
+  function dismissTimer() {
+    clearInterval(timerInterval);
+    document.getElementById('timerOverlay').classList.remove('visible');
+  }
+
+  function toggleEx(el, day) {
+    const wasUnchecked = !el.classList.contains('done');
+    el.classList.toggle('done');
+    const check = el.querySelector('.check-icon');
+    if (check) check.style.display = el.classList.contains('done') ? 'block' : 'none';
+    updateProgress(day);
+    if (wasUnchecked) startTimer(el.querySelector('.ex-name') ? el.querySelector('.ex-name').textContent : 'Set');
+    else dismissTimer();
+  }
+
+  function toggleStretch(el, day) {
+    el.classList.toggle('done');
+    const check = el.querySelector('.stretch-check');
+    if (check) check.style.display = el.classList.contains('done') ? 'block' : 'none';
+    updateProgress(day);
+  }
+
+  function resetDay(day) {
+    dismissTimer();
+    document.querySelectorAll('#ex-'+day+' .ex-card, #ex-'+day+' .circuit-card').forEach(c => { c.classList.remove('done'); const ch=c.querySelector('.check-icon'); if(ch) ch.style.display='none'; });
+    document.querySelectorAll('#flex-'+day+' .stretch-card').forEach(c => { c.classList.remove('done'); const ch=c.querySelector('.stretch-check'); if(ch) ch.style.display='none'; });
+    updateProgress(day);
+  }
+
+  function switchDay(idx) {
+    document.querySelectorAll('.day-panel').forEach((p,i) => p.classList.toggle('active', i===idx));
+    document.querySelectorAll('.day-tab').forEach((t,i) => t.classList.toggle('active', i===idx));
+  }
+
+  function autoDay() {
+    const map = {1:0,2:1,3:2,4:3,5:4};
+    const d = new Date().getDay();
+    const badge = document.getElementById('todayBadge');
+    if (map[d] !== undefined) { switchDay(map[d]); badge.textContent = 'Today: '+['Monday','Tuesday','Wednesday','Thursday','Friday'][map[d]]; }
+    else badge.textContent = 'Rest Day 💤';
+  }
+
+  initWeightInputs();
+  autoDay();
+</script>
+</body>
+</html>
