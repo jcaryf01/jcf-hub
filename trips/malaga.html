@@ -228,6 +228,19 @@
   .ticket .tk-ref{display:inline-block;margin-top:7px;font-family:ui-monospace,Menlo,monospace;font-size:.78rem;color:#8a6d2f;background:#faf4e6;border:1px solid #ecdcb6;border-radius:6px;padding:2px 7px}
   .tk-privacy{margin-top:12px;font-size:.78rem;color:var(--coral);display:flex;gap:8px;align-items:flex-start}
   .tk-live img{background:#fff}
+
+  /* ---------- Live ship position ---------- */
+  .live{padding:30px 0 6px}
+  .live-card{background:linear-gradient(180deg,var(--panel) 0%,var(--abyss) 130%);border:1px solid var(--line);border-radius:var(--r);padding:20px 22px 18px;box-shadow:var(--shadow)}
+  .live-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 16px;margin-bottom:14px}
+  .live-head h2{font-size:1.5rem}
+  .live-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#5fd38d;margin-right:8px;box-shadow:0 0 0 0 rgba(95,211,141,.6);animation:livepulse 2s infinite}
+  @keyframes livepulse{0%{box-shadow:0 0 0 0 rgba(95,211,141,.55)}70%{box-shadow:0 0 0 9px rgba(95,211,141,0)}100%{box-shadow:0 0 0 0 rgba(95,211,141,0)}}
+  @media (prefers-reduced-motion:reduce){.live-dot{animation:none}}
+  .live-map{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--abyss);min-height:380px}
+  .live-map iframe{display:block;width:100%;border:0}
+  .live-note{font-size:.82rem;color:var(--foam-dim);margin-top:12px}
+  .live-links{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:8px;font-size:.84rem}
 </style>
 </head>
 <body>
@@ -255,6 +268,38 @@
     </div>
   </div>
 </header>
+
+<!-- LIVE SHIP POSITION (VesselFinder AIS embed) -->
+<section class="live" id="live" aria-label="Live position of Azamara Quest">
+  <div class="wrap">
+    <div class="live-card">
+      <div class="live-head">
+        <div>
+          <div class="eyebrow"><span class="live-dot" aria-hidden="true"></span>Live · AIS position</div>
+          <h2>Where's Azamara Quest?</h2>
+        </div>
+        <span class="pill">IMO 9210218</span>
+      </div>
+      <div class="live-map">
+        <script type="text/javascript">
+          var width="100%";
+          var height="380";
+          var zoom="5";
+          var names=true;
+          var imo="9210218";
+          var show_track=true;
+        </script>
+        <script type="text/javascript" src="https://www.vesselfinder.com/aismap.js"></script>
+      </div>
+      <div class="live-note">Before Dec 4 this shows the ship on her prior sailing; from embarkation in Málaga it's us. Track line shows the last 24 hours; positions come from the ship's AIS transponder, so mid-ocean updates can lag a few hours.</div>
+      <div class="live-links">
+        <a href="https://www.vesselfinder.com/vessels/details/9210218" target="_blank" rel="noopener">VesselFinder ↗</a>
+        <a href="https://www.marinetraffic.com/en/ais/details/ships/imo:9210218" target="_blank" rel="noopener">MarineTraffic ↗</a>
+        <a href="https://www.cruisemapper.com/ships/Azamara-Quest-539" target="_blank" rel="noopener">CruiseMapper ↗</a>
+      </div>
+    </div>
+  </div>
+</section>
 
 <nav class="jump">
   <div class="wrap">
